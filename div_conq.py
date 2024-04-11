@@ -43,11 +43,19 @@ def generarSilo(M, X):
 
 def dibujar(M, X, S):
     if not X.incleye(S):
-        nuevoSilo = generarSilo(M, X)
+        S = generarSilo(M, X)
+    A = generarA(M, X, S)
+    R = Matriz(X.obtenerDim(), X.obtenerCoordenadas(), A) # A es el nuevo silo y el conjunto que no tiene R
 
+    if sonMinimos(A, R):
+        M.colorear(A)
+        M.colorear(R)
+    else:
+        for cuadrante in cuadrantes(X):
+            dibujar(M, cuadrante, S)
 
 def _dibujar(M, S):
-    dibujar(M, S)
+    dibujar(M, M, S)
 
 def main(n, x, y):
     M = Matriz(n)
