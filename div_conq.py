@@ -54,9 +54,9 @@ def generarSilo(M, X):
 
 def dibujar(M, X, S):
     if not X.incluye(S):
-        S = generarSilo(M, X)
+        S = generarPiezaCentral(M, X)
     A = generarA(M, X, S)
-    R = Matriz(X.obtenerDim(), X.obtenerCoordenadas()) # A es el nuevo silo y el conjunto que no tiene R
+    R = Matriz(X.obtenerDim(), X.obtenerCoordenadas())  # A es el nuevo silo y el conjunto que no tiene R
     R.diff(A)
 
     if sonMinimos(A, R):
