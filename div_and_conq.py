@@ -41,14 +41,6 @@ def generaryExcluirPiezaCentral(M, X):
     y1, x1 = M.obtenerCoordenadas()
     y2, x2 = X.obtenerCoordenadas()
 
-    yCentro = y1 + X.obtenerDim() - 1
-    xCentro = x1 + X.obtenerDim() - 1
-
-    # El centro es la X
-    # # # #
-    # X # #
-    # # # #
-    # # # #
     direccion = 0
     if x1 == x2:
         if y1 == y2:
@@ -117,4 +109,4 @@ def main(n, x, y):
     for f in matriz:
         print(f'{f},')
 
-main(16, 8, 15)
+main(16, 3, 6)
