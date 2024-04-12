@@ -1,61 +1,81 @@
 class Matriz:
-    def __init__(self, n, x=0, y=0):
+    def __init__(self, n, y=0, x=0):
         self.dim = n
-        self.x = x
         self.y = y
+        self.x = x
         self.excluido = None
 
         if n >= 2:
-            self.cuadrantes = [Matriz(n//2, x, y), Matriz(n//2, x + n//2, y),
-                               Matriz(n//2, x, y + n//2), Matriz(n//2, x + n//2, y + n//2)]
+            self.cuadrantes = [Matriz(n//2, y, x),        Matriz(n//2, y, x + n//2),
+                               Matriz(n//2, y + n//2, x), Matriz(n//2, y + n//2, x + n//2)]
 
     def obtenerCuadrantes(self):
         return self.cuadrantes
-
-    def obtenerSilo(self):
-        return self.x, self.y
 
     def obtenerDim(self):
         return self.dim
 
     def incluye(self, s):
         if s.obtenerDim() == 1 and self.dim >= 1:
-            return self.x + self.dim >= s.x and self.y + self.dim >= s.y
+            return self.y <= s.y <= self.y + self.dim - 1 and self.x <= s.x <= self.x + self.dim - 1
 
     def excluir(self, aExcluir):
         self.excluido = aExcluir
 
+    def tieneExcluido(self):
+        return self.excluido is not None
+
+    def obtenerCoordenadasExcluido(self):
+        return self.excluido.obtenerCoordenadas()
+
+    def obtenerCoordenadas(self):
+        return self.y, self.x
     def __repr__(self):
-        return f'{self.x} - {self.x + self.dim}, {self.y} - {self.y + self.dim})'
+        return f'[{self.y} - {self.y + self.dim - 1}, {self.x} - {self.x + self.dim - 1}]'
 def esMinimo(M):
     return M.obtenerDim() == 2
 
-def generarPiezaCentral(M, X):
-    x1, y1 = M.obtenerCoordenadas()
-    x2, y2 = X.obtenerCoordenadas()
+def generaryExcluirPiezaCentral(M, X):
+    if X.tieneExcluido():
+        return
+    y1, x1 = M.obtenerCoordenadas()
+    y2, x2 = X.obtenerCoordenadas()
 
+    yCentro = y1 + X.obtenerDim() - 1
     xCentro = x1 + X.obtenerDim() - 1
-    yCentro = x1 + X.obtenerDim() - 1
 
     # El centro es la X
     # # # #
     # X # #
     # # # #
     # # # #
+    direccion = 0
     if x1 == x2:
         if y1 == y2:
-            # 1er cuadrante
-            return X[1], Matriz(1, xCentro, yCentro)
+            # X esta en el 1er cuadrante de M
+            # por lo que el centro esta en la parte inferior derecha
+            direccion = 3
         elif y2 > y1:
-            # 3do cuadrante
-            return X[3], Matriz(1, xCentro, yCentro + 1)
+            # X esta en el 3er cuadrante de M
+            # por lo que el centro esta en la parte superior derecha
+            direccion = 1
     elif x2 > x1:
         if y2 == y1:
-            # 2er cuadrante
-            return X[2], Matriz(1, xCentro + 1, yCentro)
+            # X esta en el 2do cuadrante de M
+            # por lo que el centro esta en la parte inferior izquierda
+            direccion = 2
         elif y2 > y1:
-            # 4to cuadrante
-            return X[4], Matriz(1, xCentro + 1, yCentro + 1)
+            # X esta en el 4to cuadrante de M
+            # por lo que el centro esta en la parte superior izquierda
+            direccion = 0
+
+    cuadranteAnt = X
+    cuadranteAct = X.obtenerCuadrantes()[direccion]
+    while cuadranteAct.obtenerDim() > 1:
+        cuadranteAnt.excluir(cuadranteAct)
+        cuadranteAnt = cuadranteAct
+        cuadranteAct = cuadranteAct.obtenerCuadrantes()[direccion]
+    cuadranteAnt.excluir(cuadranteAct)
 
 def encontrarA(campo, S):
     for cuadrante in campo.obtenerCuadrantes():
@@ -63,28 +83,29 @@ def encontrarA(campo, S):
             return cuadrante
 
 def colorear(matriz, cuadrante, codigo):
-    x, y = cuadrante.obtenerSilo()
+    y, x = cuadrante.obtenerCoordenadas()
     for i in range(y, y + cuadrante.obtenerDim()):
         for j in range(x, x + cuadrante.obtenerDim()):
             matriz[i][j] = codigo
-    matriz[y][x] = 1
+    excluidoY, excluidoX = cuadrante.obtenerCoordenadasExcluido()
+    matriz[excluidoY][excluidoX] = 1
 
 def dibujar(matriz, campoGrande, cuadranteActual, S, codigo):
     if not cuadranteActual.incluye(S):
-        cuadranteA, S = generarPiezaCentral(campoGrande, cuadranteActual)
+        generaryExcluirPiezaCentral(campoGrande, cuadranteActual)
     else:
         cuadranteA = encontrarA(cuadranteActual, S)
-    cuadranteActual.excluir(cuadranteA)
+        cuadranteActual.excluir(cuadranteA)
 
     if esMinimo(cuadranteActual):
-        colorear(matriz, cuadranteActual, codigo)
+        codigo[0] += 1
+        colorear(matriz, cuadranteActual, codigo[0])
     else:
         for cuadrante in cuadranteActual.obtenerCuadrantes():
-            codigo += 1
-            dibujar(matriz, campoGrande, cuadrante, S, codigo)
+            dibujar(matriz, cuadranteActual, cuadrante, S, codigo)
 
 def _dibujar(matriz, M, S):
-    dibujar(matriz, M, M, S, 1)
+    dibujar(matriz, M, M, S, [1])
 
 def main(n, x, y):
     matriz = [[0 for _ in range(n)] for _ in range(n)]
@@ -93,4 +114,7 @@ def main(n, x, y):
     _dibujar(matriz, M, S)
     print(matriz)
 
-main(4, 1, 1)
+    for f in matriz:
+        print(f'{f},')
+
+main(16, 8, 15)
