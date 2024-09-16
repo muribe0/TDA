@@ -54,6 +54,8 @@ def pruebas(size):
     print(f"{s > m} - input: {size} tiempo: {fin-inicio}")
     return (size ,fin-inicio)
 
+# F(X) = A x + B
+
 resultados = []
 for _ in range(30):
     n = randint(1000, 1000000)
@@ -66,6 +68,14 @@ y = [point[1] for point in resultados]
 ax: plt.Axes
 fig, ax = plt.subplots()
 ax.plot(x, y, "bo")
-ax.set_ylim(-0.1, 0.5)
+ax.set_ylim(0, 0.5)
 ax.set_xlim(-0.1, 1000000)
+plt.show()
+
+ax: plt.Axes
+fig, ax = plt.subplots()
+ax.plot(x, [resultados[i] for i in x], label="Medición")
+ax.set_title('Tiempo de ejecución de sorted')
+ax.set_xlabel('Tamaño del array')
+ax.set_ylabel('Tiempo de ejecución (s)')
 plt.show()

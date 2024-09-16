@@ -5,8 +5,43 @@
 Iterativa
 
 # Top Down
+Recursiva:
+Ejemplo Fibonacci que usa Fib(n) = Fib(n-1) + Fib(n-2) usando memoization si se puede
 
-Recursiva
+```python
+def fib(n, memo):
+    if memo[n]:
+        return memo[n]
+    if n == 1:
+        return 1
+    elif n == 0:
+        return 1
+    
+    return fib(n-1) + fib(n-2)
+        
+def fib(n):
+    memo = [None] * n
+    return fib(n, memo)
+```
+
+En catedra:
+```python
+def fib_memorioso(n):
+   M_FIB = [None] * (n+1)
+   return fib_rec_memorioso(n, M_FIB)
+
+def fib_rec_memorioso(n, M_FIB):
+   if n == 0:
+       return 0
+   if n == 1:
+       return 1
+   if M_FIB[n-1] == None:
+       M_FIB[n-1] = fib_rec_memorioso(n-1, M_FIB)
+   if M_FIB[n-2] == None:
+       M_FIB[n-2] = fib_rec_memorioso(n-2, M_FIB)
+   M_FIB[n] = M_FIB[n-1] + M_FIB[n-2]
+   return M_FIB[n]
+```
 
 # Schedulind de charlas con pesos
 
