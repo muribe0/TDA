@@ -15,4 +15,4 @@ def charlas(horarios):
 
 horarios = [(0, 1), (2, 5), (3, 4), (5, 6), (2, 4), (1, 3)]
 
-print(charlas(horarios))
+# print(charlas(horarios))

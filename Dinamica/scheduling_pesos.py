@@ -5,10 +5,11 @@ utilizando programación dinámica, reciba un arreglo que en cada posición teng
 representada por una tripla de inicio, fin y valor de cada charla, e indique cuáles son las
 charlas a dar para maximizar la ganancia total obtenida. Indicar y justificar la complejidad del algoritmo implementado.
 """
+from Greedy.sheduling import charlas
 
 """
 Estrategia:
-1. Ordenar las charlas de forma ascendente segun el timepo de fin
+1. Ordenar las charlas de forma ascendente segun el timepo de fin   
 2. Obtener la charla k para la cual el fin_k <= charla_i para cada i (para cada charla).
 3. Obtener el mejor de cada charla segun opt(i) = max[ opt(i-1), opt(k) + charlas(i)  ]
 """
@@ -30,17 +31,19 @@ def reconstruirSolucion(M, charlas, p):
     i = len(charlas) - 1
     solucion = []
     while i >= 0:
-        if (p[i] >= 0 and  M[i] == M[p[i]] + charlas[i][2]) or i == 0:
+        if (p[i] >= 0 and  M[i] == M[p[i]] + charlas[i][2]) or (p[i] < 0 and M[i] == charlas[i][2]):
             solucion.append(i)
             i = p[i]
         else:
             i -= 1
     return solucion
 
-def scheduling(charlas):
+def scheduling_pesos(charlas):
     n = len(charlas)
+    if n == 0:
+        return []
     if n == 1:
-        return charlas[0][2]
+        return [0]
 
     charlas.sort(key=lambda x: x[1])
 
@@ -54,14 +57,7 @@ def scheduling(charlas):
         else:
             M[i] = max ( M[i-1], charlas[i][2])
 
-    return reconstruirSolucion(M, charlas, p)
-
-charlas = [(1, 3, 5),
-           (2, 5, 6),
-           (3, 7, 8),
-           (4, 6, 7),
-           (5, 8, 9),
-           (6, 9, 10)]
+    return reconstruirSolucion(M, charlas, p)[::-1]
 
 def printCharlas(charlas):
     charlas.sort(key=lambda x: x[1])
@@ -71,5 +67,32 @@ def printCharlas(charlas):
         faltante = 30 - len(linea)
         print(f"{linea}{" "*faltante} {peso}")
 
-printCharlas(charlas)
-print(scheduling(charlas))
+
+def test6():
+
+    charlas = [(1, 3, 5),
+               (2, 5, 6),
+               (3, 7, 8),
+               (4, 6, 7),
+               (5, 8, 9),
+               (6, 9, 10)]
+
+    assert(scheduling_pesos(charlas) == [0, 2, 5])
+
+def test0():
+    charlas = []
+    assert(scheduling_pesos(charlas) == [])
+
+def test1():
+    charlas = [(5, 10, 15)]
+    assert(scheduling_pesos(charlas) == [0])
+
+def test2():
+    charlas = [(5, 10, 15), (9, 11, 20)]
+    printCharlas(charlas)
+    assert (scheduling_pesos(charlas) == [1])
+
+test0()
+test1()
+test2()
+test6()
