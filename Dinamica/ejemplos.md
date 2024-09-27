@@ -42,9 +42,9 @@ derecha.
 
 Mov[N,M] = Mov[N-1, M] + M[N, M-1]
 
-![img.png](img.png)
+![img.png](img/img.png)
 
-![img_1.png](img_1.png)
+![img_1.png](img/img_1.png)
 
 ## Ejercicio: Caminos a traves del teclado del telefono
 
@@ -52,5 +52,5 @@ Dado el teclado numérico de un celular, y un número inicial k, encontrar la ca
 empezando por cierto botón. Restricción: solamente se puede presionar un botón si está arriba, abajo, a izquierda, o
 derecha del botón actual.
 
-![img_2.png](img_2.png)
+![img_2.png](img/img_2.png)
 

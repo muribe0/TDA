@@ -45,7 +45,7 @@ def fib_rec_memorioso(n, M_FIB):
 
 # Schedulind de charlas con pesos
 
-![img.png](img.png)
+![img.png](img/img.png)
 
 Compatibilidad: Cualquier solucion parcial $k$ que tenga su fin en $F_k$ va a ser compatible con la charla $C_j$ si
 dicha charla tiene inicia $I_j >= F_k$.
@@ -54,7 +54,7 @@ Se busca encontrar, para cualquier charla $C_j$ la solucion parcial $k$ maxima c
 peso acumulado por la solucion parcial $k$ **sumado** al peso de la charla $C_j$ va a ser la mejor solucion posible
 _hasta el momento_ que incluya a $C_j$.
 
-![img_1.png](img_1.png)
+![img_1.png](img/img_1.png)
 
 Dar la charla j implica que puedo, por lo que $OPT(j) = P_j + OPT(j-1)$
 No dar la charla j implica que lo mejor es lo anterior: $OPT(j) = OPT(j-1)$
