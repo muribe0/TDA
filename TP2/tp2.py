@@ -1,33 +1,51 @@
-# Maximizar la ganancia consiste en agregar o no un elemento i.
-# Si no se agrega, la mejor solucion es aquella que no lo tiene.
-# Si se agrega, la mejor solucion es aquella que lo tiene, pero tiene W-Pi peso.
+import difflib
 
-# Maximizar la ganancia de Sophi consiste en agregar o no un elemento del fin/inicio
+def reconstruir_solucion(OPT, monedas):
+    i, j = 0, len(monedas) - 1
+    ganancia_sophi = 0
+    ganancia_mateo = 0
+    elecciones = []
 
-from math import ceil
+    while i <= j:
+        # Turno de Sophia
+        if i == j:
+            ganancia_sophi += monedas[i]
+            elecciones.append(f"Sophia debe agarrar la primera ({monedas[i]})")
+            break
 
-def reconstruirSolucion(OPT):
-    n = len(OPT)
-    f = 0
-    c = n - 1
-    solucion = []
-    turnoSophia = True
-    while len(solucion) < ceil(n / 2):
-        if not turnoSophia: # Si es el turno de Mateo
-            if OPT[f][c] == monedas[c] - OPT[f][c-1]: # Si Mateo eligio el elemento del final
-                c -= 1
-            elif OPT[f][c] == monedas[f] - OPT[f+1][c]: # Si Mateo elegio el elemento del principio
-                f += 1
+        if monedas[i + 1] > monedas[j]:
+            i_izq, j_izq = i + 2, j
+        else:
+            i_izq, j_izq = i + 1, j - 1
+        tomar_izq = monedas[i] + OPT[i_izq][j_izq]
 
-        elif OPT[f][c] == monedas[c] - OPT[f][c-1]:  # Si Sophia eligio el elemento del final
-            solucion.append(monedas[c])
-            c -= 1
-        elif OPT[f][c] == monedas[f] - OPT[f+1][c]:  # Si Sophia eligio el elemento del comienzo
-            solucion.append(monedas[f])
-            f += 1
+        if monedas[i] > monedas[j - 1]:
+            i_der, j_der = i + 1, j - 1
+        else:
+            i_der, j_der = i, j - 2
+        tomar_der = monedas[j] + OPT[i_der][j_der]
 
-        turnoSophia = not turnoSophia
-    return solucion
+        if tomar_izq >= tomar_der:
+            ganancia_sophi += monedas[i]
+            elecciones.append(f"Sophia debe agarrar la primera ({monedas[i]})")
+            i += 1
+        else:
+            ganancia_sophi += monedas[j]
+            elecciones.append(f"Sophia debe agarrar la ultima ({monedas[j]})")
+            j -= 1
+
+        if monedas[i] > monedas[j]:
+            ganancia_mateo += monedas[i]
+            elecciones.append(f"Mateo agarra la primera ({monedas[i]})")
+            i += 1
+        else:
+            ganancia_mateo += monedas[j]
+            elecciones.append(f"Mateo agarra la ultima ({monedas[j]})")
+            j -= 1
+
+    resultado = "; ".join(elecciones)
+
+    return resultado
 
 def juego(monedas):
     n = len(monedas)
@@ -38,25 +56,22 @@ def juego(monedas):
             largo = abs(i - j) + 1
 
             if largo == 1:
-                # Caso base
                 OPT[i][j] = monedas[i]
-            elif largo == 2:
-                # Caso base , dos monedas Sofia toma la mejor
-                OPT[i][j] = abs(monedas[i] - monedas[j])
             else:
-                # Si toma la primer moneda...
-                if i == n - 1:
-                    # Si toma la primer moneda, Mateo toma la mejor de las que quedan
-                    OPT[i][j] = monedas[i] - OPT[i+1][j]
-                # Si toma la ultima moneda...
+                if monedas[i + 1] > monedas[j]:
+                    i_izq = i + 2
+                    j_izq = j
                 else:
-                    # Si toma la ultima moneda, Mateo toma la mejor de las que quedan
-                    OPT[i][j] = max(monedas[i] - OPT[i+1][j], monedas[j] - OPT[i][j-1])
+                    i_izq = i + 1
+                    j_izq = j - 1
 
+                if monedas[i] > monedas[j - 1]:
+                    i_der = i + 1
+                    j_der = j - 1
+                else:
+                    i_der = i
+                    j_der = j - 2
 
-    return reconstruirSolucion(OPT)
+                OPT[i][j] = max(monedas[i] + OPT[i_izq][j_izq], monedas[j] + OPT[i_der][j_der])
 
-
-monedas = [5, 2, 1, 4, 7, 6]
-resultado = juego(monedas)
-print(resultado)
+    return OPT
