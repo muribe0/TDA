@@ -21,6 +21,29 @@ graph
     id4 -->|2| id9
 
 ```
+### Caso par
+En este caso, 1 es el unico candidato y **cumple** por aparecer más de la mitad de veces
+```mermaid
+graph
+    id1(1,1) --> |1|id(1)
+```
+
+En este caso, 2 es el unico candidato y **no cumple** por aparecer menos de la mitad de las veces
+```mermaid
+graph
+    id1(1,2,2,1) --> |2|id(2)
+```
+
+En este caso, 2 es el unico candidato y **no cumple** por aparecer menos de la mitad de las veces
+```mermaid
+graph
+    id1(1,2,2,2) --> |2|id(2)
+```
+### Caso impar
+```mermaid
+graph
+    id1(1,2,1) --> id2(null)
+```
 
 ```python
 def _mas_mitad(arr, ini, fin):
