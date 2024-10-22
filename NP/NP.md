@@ -42,7 +42,7 @@ Vertex Cover: Subconjunto en el cual juntando los vertices del subconjunto, sus 
 $S$ es un set independiente de $G$ sii $V - S$ es vertex cover de $G$.
 
 ```mermaid
-graph
+graph LR
     1 --- 2
     2 --- 3
     3 --- 1
@@ -96,7 +96,7 @@ $SAT \leq_p 3SAT$. -> no tan trivial
 ![img.png](img.png)
 
 ```mermaid
-graph
+graph LR
     a1(x1)
     a2(x1)
     a3(not x1)
@@ -144,11 +144,11 @@ validar en tiempo polinomial.
 * Problema de la mochila: existe un conjunto de elementos tales que su peso sea menor a W y su valor sea al menos V?
 * Contraseña: Dada una contraseña, es correcta?
 
-### P \subseteq NP
+### $P \subseteq NP$
 
 Pues cualquier problema que puede resolverse en tiempo Polinomial tambien se puede validar en tiempo Polinomial.
 
-### NP \subseteq P?
+### $NP \subseteq P$?
 
 No se sabe.
 
@@ -161,8 +161,146 @@ problema. Por lo que si podemos resolver un problema NP-completo en tiempo polin
 se pueden resolver en tiempo polinomial.
 
 ## Conclusiones
+
 1. Podemos comparar la dificultad de problemas transformando, reduciendo unos a otros.
-2. Reducir Y a X implica que X es al menos tan complicado como Y. No dice cuán complicado es Y (aunque dice que es a lo sumo tan complicado como X).
+2. Reducir Y a X implica que X es al menos tan complicado como Y. No dice cuán complicado es Y (aunque dice que es a lo
+   sumo tan complicado como X).
 3. Hay problemas fáciles, difíciles y los más difíciles.
-4. Vimos clases de complejidad (un inicio) → Problemas NP-Completos → cualquier cosa a la que los podamos reducir son NP-Completos.
-5. Vamos a seguir laburando con esto, que no es fácil.  
+4. Vimos clases de complejidad (un inicio) → Problemas NP-Completos → cualquier cosa a la que los podamos reducir son
+   NP-Completos.
+5. Vamos a seguir laburando con esto, que no es fácil.
+
+# Clase 2
+
+$X \in NP-completo$ sii:
+
+* $X \in NP$
+* Para todo $Y \in NP$, $Y \leq_p X$
+
+La reduccion $Y_{completo} \leq_p X$ implica que $X_{completo}$ es al menos tan dificil como $Y_{completo}$.
+Consecuentcias:
+
+1. Si $X$ es un problema NP-Completo, solo puede reseolverse en tiempo polinomial sii $P = NP$.
+
+## NP-Completo
+
+Teorema de Cook & Levin: Circuit SAT es NP-Completo.
+
+Circuit SAT: Dado un circuito, existe una asignacion de valores de verdad que haga que el circuito sea verdadero?
+
+![img_1.png](img_1.png)
+
+Siempre decimos que $Y \leq_p X$ si es que al problema $Y$ puedo reducirlo a $X$ y resolver $X$ con una caja negra que
+lo resuelve en tiempo polinomial y podemos usarla una cantidad polinomial de veces.
+
+Si logramos:
+
+1. $X \in NP$
+2. $CS \leq_p X$
+
+Entonces $X$ es NP-Completo.
+
+Para ver si $CS$ es un problema NP debo encontrar un certificador eficiente (en tiempo polinomial) que reciba el
+problema que tenemos y una posible solucion para revisar si es correcta.
+
+Si logramos reducir un problema NP-Completo a otro X -> X es NP-Completo por **propiedad de transitividad**
+
+Se puede reducir $CS$ a $3-SAT$.
+... ver demostracion en clase ...
+
+### N-Reinas
+
+Es un problema $NP$ pues se puede hacer un verificador eficiente de la solucion.
+
+Lo habiamos reducido a $IS$. por lo que $N-Reinas \leq_p IS$. Sabemos que $IS$ es NP-Completo.
+Opciones:
+
+* Nos falta ver si $IS \leq_p N-Reinas$. Si esto se cumple, entonces $N-Reinas$ es NP-Completo.
+* Tambien podria agarrar cualquier problema NP-Completo y reducirlo a $N-Reinas$.
+
+### Ejercitacion:
+
+#### 1. Ver si un numero es multiplo de otro a ver si un elemento esta un una lista
+
+* Es A multiplo de B?
+* Para esto deberiamos tener una lista con los multiplos de B desde 0 hasta A. Si A esta en la lista, es multiplo.
+
+#### 2. Ver si K-clique es NP-Completo usando Independent Set
+
+A clique, C, in an undirected graph G = (V, E) is a subset of the vertices, C ⊆ V, such that every two distinct vertices
+are adjacent.![img_2.png](img_2.png)
+
+Sabemos que es NP pues podemos verificarlo con un certificador eficiente: hay que ver que todos los vertices del
+subgrafo tengan igual grado a la cantidad de vertices del subgrafo.
+Nos falta reducir IS a K-clique.
+
+IS: existe un conjunto de vertices de tamaño k tal que no haya aristas entre ellos.
+
+Para el grafo original G $/\forall v \in IS$ por lo que $G^c$ (complemento de G) tiene un clique de tamaño k.
+
+1. Obtenemos el grafo complemento de G. -> **Aristas** que no estan en G.
+2. Definimos que hay un IS de al menos K vertices sii hay un clique de tamaño K en el grafo complemento.
+
+Si en el grafo G $ \exists IS \geq k \Leftarrow\Rightarrow \exists K-C \geq k$ para el grafo complementario $G^c$.
+
+Debo demostrar la idea.
+
+$\Rightarrow$ Si hay un IS de tamaño k en G, entonces hay un clique de tamaño k en $G^c$.
+Hipotesis: Si tengo un IS de tamaño k en G, entonces no hay aristas entre ellos. Por lo que en $G^c$ hay aristas entre
+todos ellos entre si. Por lo que hay un clique de tamaño k en $G^c$.
+
+$\Leftarrow$ Si hay un clique de tamaño k en $G^c$, entonces hay un IS de tamaño k en G.
+Hipotesis: Si tengo un clique de tamaño k en $G^c$, entonces hay aristas entre todos ellos. Por lo que en G no hay
+aristas entre ellos. Por lo que hay un IS de tamaño k en G.
+
+La tecnica fue asumiendo la hipotesis, demuestro la otra parte de forma directa.
+
+Por lo que $IS \leq_p K-C$. pues si tengo una caja negra que resuelve K-C, puedo resolver IS. Primero debo darle a la
+caja negra que resuelve K-C el grafo complemento y obtengo la respuesta a la pregunta original.
+
+Por lo que $K-C$ es NP-Completo.
+
+### Estrategias para reducir en general
+
+1. Reduccion por equivalencia simple (Independent Set, K-clique, Vertex Cover)
+2. Reduccion de caso general a caso general (Nreinas a Independet Set)
+3. Reduccion por encodeo de caracteristicas
+
+### Veamos Programacion Lineal
+
+Programacion Lineal es un problema:
+
++ Es la ganancia $\leq k$?
++ Es la ganancia $\geq k$?
+
+Es NP pues puedo chequear si la solucion es correcta en tiempo polinomial.
+
+1. Me fijo si cumple con las restricciones
+2. Me fijo si la $opt == ganancia$ es la esperada.
+
+$PL \in NP$,
+$PLE \in NP-Completo$
+
+## Coloreo de Grafos
+Cuando k = 2 $\rightarrow$ es bipartito.
+Cuando k = 3 $\rightarrow$ NP-completo.
+
+1. Esta en NP: si
+2. 3-SAT $\leq_p$ Coloreo de Grafos: veremo
+
+1. Crear un nodo por cada variable $x_i$ y un nodo por su complemento $\overline{x_i}$.
+2. Unir los vertices de variables con sus complementos. -> con esto aseguramos que no haya contradicciones entre una variable y su complemento. Ya que si estan unidos, no pueden tener el mismo color (es decir, no pueden tener el mismo valor de verdad). 
+3. Creamos 3 nodos especiales: True, False, Base.
+4. Unimos a cada varaible y complemento con Base para formar triangulos
+5. Unimos True con todas las variables y False con todos los complementos.
+
+![img_3.png](img_3.png)
+
+![img_4.png](img_4.png)
+
+## Subset Sum
+Recordamos: dado un conjunto de n elementos y un peso W, existe un subconjunto que sume exactamente W?
+
+Por progamacion dinamica: O(nW) $\rightarrow$ es pesudopolinomial.
+
+Susbset Sum es NP-completo
