@@ -42,16 +42,16 @@ def reconstruir_solucion(OPT, monedas):
 
 def juego(monedas):
     n = len(monedas)
-    OPT = [[0 for _ in range(n)] for _ in range(n)]
+    OPT = [[0 if i != j else monedas[i] for i in range(n)] for j in range(n)]
+
 
     for j in range(n):
-        for i in range(j, -1, -1):  # esto itera (f,c): (0,0)->(1,1)->(0,1)->(2,2)->(1,2)->(0,2)->...
+        for i in range(j-1, -1, -1):  # esto itera (f,c): (0,0)->(1,1)->(0,1)->(2,2)->(1,2)->(0,2)->...
             largo = abs(i - j) + 1
 
-            if largo == 1:
-                # Caso base
-                OPT[i][j] = monedas[i]
-            else:
+            if largo == 2:
+                OPT[i][j] = max(monedas[i], monedas[j])
+            elif largo > 2:
                 # Si toma la primer moneda, Mateo debe elegir la mejor de las que quedan:
                 if monedas[i+1] > monedas[j]:
                     i_izq = i+2
@@ -69,7 +69,6 @@ def juego(monedas):
                     j_der = j-2
 
                 OPT[i][j] = max(monedas[i] + OPT[i_izq][j_izq],  monedas[j] + OPT[i_der][j_der])
-
 
     return reconstruir_solucion(OPT, monedas)
 
