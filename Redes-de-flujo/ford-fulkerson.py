@@ -17,10 +17,10 @@ def bfs(grafo, inicio):
 
 def max_flow(graph, s, t):
     graph.set_all_flows(0)
-    Gf = ResidualGraph(graph)
+    Gf = graph
     path = Gf.augmenting_path(s, t)
-    while path:
-
+    while path: # No esta testeado pero se ve bastante OK. Sirve para entender bien como funciona el algoritmo
+        Gf.augment(path)
         Gf = ResidualGraph(Gf)
         path = Gf.augmenting_path(s, t)
     return 0

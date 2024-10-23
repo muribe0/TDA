@@ -112,7 +112,7 @@ $c_f(u,v) = c(u,v) - f(u,v) > o$. Edges in $E_f$ admit more flow.
 
 If $(v,u) \notin E, c(v,u) = 0$ but $f(u,v)=-f(v,u)$
 
-![img_6.png](img/img_6network-flow.png)
+![img_8.png](img_8.png)
 
 ## Augmenting Path
 
@@ -154,12 +154,30 @@ the residual graph $G_f$ of $G$ with respect to f as follows:
 
 * The node set of Gf is the same as that of G.
 * For each edge $e = (u, v)$ of $G$ on which $f (e) < c(e)$, there are $c(e) − f (e)$
-  “leftover” units of capacity on which we could try pushing flow forward. So we include the edge $e = (u, v)$ in $G_f$ ,
+  “leftover” units of capacity on which we could try pushing flow forward. So we include the edge $e = (u, v)$
+  in $G_f$ ,
   with a capacity of $c(e) − f (e)$. We will call edges included this way forward edges.
-* For each edge $e = (u, v)$ of G on which $f (e) > 0$, there are f (e) units of flow that we can “undo” if we want to, by
-  pushing flow backward. So we include the edge $e' = (v, u)$ in $G_f$ , with a capacity of f (e). Note that $e'$ has the same
+* For each edge $e = (u, v)$ of G on which $f (e) > 0$, there are f (e) units of flow that we can “undo” if we want to,
+  by
+  pushing flow backward. So we include the edge $e' = (v, u)$ in $G_f$ , with a capacity of f (e). Note that $e'$ has
+  the same
   ends as e, but its
   direction is reversed; we will call edges included this way backward edges.
+
+Some points to say about the next img:
+
+1. The flow is 0 for all newly generated edges.
+2. The flow, after finding and augmenting path, will be aumented through that path by the minimum capacity of the edges
+   that form the path.
+3. After augmenting the flow, the new edges must be coputed following the rules:
+    * If any edge $e$ has positive flow, then there will be a backward edge $e'$. If there already was a backward
+      edge $e''$, then the
+      capacity of $e'$ will be the $f(e) + c(e'')$.
+    * Else, the capacity of the edge $e'$ will be $c(e) - f(e)$.
+    * If any edge $e$ has positive flow, then we check if there is residual capacity. That is, if $c(e) > f(e)$, then we
+      create the fordward edge $e'$ with capacity $c(e) - f(e)$.
+   
+![img_9.png](img_9.png)
 
 Paso 1:
 

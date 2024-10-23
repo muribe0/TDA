@@ -20,7 +20,7 @@ class Vertex:
         return self.name
 
     def add_edge(self, edge):
-        self.edges.append(edge)
+        self.edges.add(edge)
 
     def get_edges(self):
         return self.edges
@@ -67,27 +67,47 @@ class Graph:
             return None
 
         cola = deque([s])
-        parent = {s: None}
+        parent_edge = {s: None}
 
         while cola:
             actual = cola.popleft()
-            if actual.visited:
+            if actual.visited():
                 continue
             actual.visit()
             for edge in actual.get_edges():
                 target = edge.target
-                if not target.visited and edge.get_residual_capacity() > 0:
-                    parent[target] = actual
+                if not target.visited() and edge.get_residual_capacity() > 0:
+                    parent_edge[target] = edge
                     if target == t:
                         path = []
                         while target:
-                            path.append(target)
-                            target = parent[target]
-                        return path
+                            edge = parent_edge[target]
+                            path.append(edge)
+                            target = edge.source
+
+                        return path[::-1]
                     cola.append(target)
 
-
         return None
+
+
+    def bottle_neck(self, path):
+        if len(path) < 1:
+            return 0
+        b = float('inf')
+        for edge in path:
+            b = min(b, edge.get_residual_capacity())
+        return b
+
+    def augment(self, path):
+        b = self.bottle_neck(path) # this is the minimum residual capacity of the path
+        for edge in path:
+            edge.flow += b
+            back_edge = edge.target.get_edge_to(edge.source)
+            if back_edge:
+                back_edge.flow -= b
+
+
 
 class ResidualGraph(Graph):
     def __init__(self, original_graph):
@@ -120,7 +140,11 @@ class ResidualGraph(Graph):
 
             # Backward edge
             if edge.flow > 0:
-                backward_edge = Edge(new_target, new_source, edge.flow)
+                previous_backward_flow = 0
+                previous_backward_edge = edge.target.get_edge_to(edge.source)
+                if previous_backward_edge: # this takes into consideration the already existing backward edges
+                    previous_backward_flow = previous_backward_edge.flow
+                backward_edge = Edge(new_target, new_source, edge.flow + previous_backward_flow)
                 new_target.add_edge(backward_edge)
                 new_edges.add(backward_edge)
 
