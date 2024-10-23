@@ -5,48 +5,44 @@ Implementar un algoritmo que, por programación dinámica, reciba los valores y 
 y devuelva qué elementos deben ser guardados para maximizar la ganancia total.
 Indicar y justificar la complejidad del algoritmo implementado.
 """
-def mejor(elementos, i, P, W):
-    valor_i, peso_i = elementos[i]
-    indice_mayor = i
-    valor_mayor = valor_i
-    peso_mayor = peso_i
-    for j in range(0, i):
-        valor_actual, peso_actual = elementos[j]
-        if valor_actual >= valor_mayor:
-            # ves si elegir el elemento j te aporta mas que elegir el i, y si hay espacio para bancarlo
-            # agregar el elemento j es agregar el peso que acumula, mas el peso de agregarlo.
-            # ademas, implica          agregar el valor que acumular, mas el valor de agregarlo.
-            if P[j] + peso_actual <= W:
-                valor_mayor = valor_actual
-                indice_mayor = j
 
-            peso_mayor = P[j] + peso_mayor
-    return indice_mayor
+def reconstruirSolMochila(OPT, elementos):
+    solucion = []
+    f = len(OPT) - 1
+    c = len(OPT[0]) - 1
+    while f > 0 and c > 0:
+        if OPT[f][c] != OPT[f-1][c]:
+            solucion.append(f-1)
+            _, p = elementos[f-1]
+            c -= p
+        f -= 1
+    return solucion
+
+# Maximizar la ganancia consiste en agregar o no un elemento i.
+# Si no se agrega, la mejor solucion es aquella que no lo tiene.
+# Si se agrega, la mejor solucion es aquella que lo tiene, pero tiene W-Pi peso.
 
 def mochila(elementos, W):
     n = len(elementos)
 
-    #g  3   |   1
-    #p  2   |   2
+    OPT = [[0 for _ in range(W+1)] for _ in range(n+1)]
+    # OPT(i,0) = 0
+    # OPT(0,W) = 0
 
-    #   1.5 |  0.5
-    M = [0] * n
-    P = [0] * n
+    for i in range(1, n+1): # para cada posible elemento i
+        for w in range(1, W+1): # me fijo como se comportaria con una mochila de capacidad w
+            v, p = elementos[i-1]
+            if p > w: # si su peso es mayor a la capacidad, no lo puedo agregar
+                OPT[i][w] = OPT[i-1][w]
+            else:
+                OPT[i][w] = max(OPT[i-1][w], v + OPT[i-1][w-p])
 
-    M[0], P[0] = elementos[0][0], elementos[0][1]
-
-    for i in range(1, n): # QUEREMOS CALCULAR, PARA CADA elemento: EL subset que maximiza
-        j = mejor(elementos, i, P, W)
-        valor, peso = elementos[j]
-        M[i] = valor + M[j]
-        P[i] = peso + P[j]
-
-    return M
+    return reconstruirSolMochila(OPT, elementos)
 
 elementos = [(3, 2), (1, 2)]
 print(mochila(elementos, 3)) # [3, 1]
-print(mochila(elementos, 4)) # [3, 3]
-print(mochila(elementos, 40)) # [3, 3]
+print(mochila(elementos, 4)) # [3, 1])
 
-elementos = [(3, 2), (1, 2), (1, 1)]
-print(mochila(elementos, 3)) # [3, 4]
+elementos = [(3, 2), (1, 2), (2, 1), (3, 1)]
+restulado = mochila(elementos, 3) # [3, 1]
+print(restulado)

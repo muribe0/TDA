@@ -28,40 +28,40 @@ Nota sobre RPL: en este ejercicio se pide cumplir la tarea "por división y conq
 Por las características de la herramienta, no podemos verificarlo de forma automática,
 pero se busca que se implemente con dicha restricción
 """
-def find_negative_list(numbers, i):
-    right_negative_limit = i
-    sum_negative = numbers[i]
-    for j in range(i, len(numbers)):
-        current = numbers[j]
-        if numbers[j] < 0:
-            sum_negative += current
-            right_negative_limit += 1
-        else:
-            return right_negative_limit, sum_negative
-    return right_negative_limit, sum_negative
 
+# Siempre hay 3 arreglos:
+# Parte positiva, parte negativa, resto
+#
 
-def merge(sum_left, sum_negative, sum_right):
-    # Arreglar merge para contemplar casos en los que la der gane
-    if sum_negative + sum_right < 0:
-        return sum_left
-    return sum_left + sum_negative + sum_right
+def max_crossing_sum(arr, low, mid, high):
+    left_sum = float('-inf')
+    sum = 0
+    for i in range(mid, low - 1, -1): # acumula la suma del 1ro hasta la mitad
+        sum += arr[i]
+        if sum > left_sum:
+            left_sum = sum
 
+    right_sum = float('-inf')
+    sum = 0
+    for i in range(mid + 1, high + 1): # acumula la suma desde la mitad al ultimo
+        sum += arr[i]
+        if sum > right_sum:
+            right_sum = sum
 
-def max_subset_iter(numbers, left=0):
-    n = len(numbers)
-    if left == n:
-        return 0
-    # 1 2 -3 2 2 -5 100
-    sum_left = 0
-    for i in range(left, len(numbers)):
-        current = numbers[i]
-        if current >= 0:
-            sum_left += current
-        else:
-            right_negative_limit, sum_negative = find_negative_list(numbers, i)
+    return left_sum + right_sum
 
-            sum_rigth = max_subset_iter(numbers, right_negative_limit + 1)
+def max_subarray_sum(arr, low, high):
+    if low == high:
+        return arr[low]
 
-            return merge(sum_left, sum_negative, sum_rigth)
-    return sum_left
+    mid = (low + high) // 2
+
+    return max(max_subarray_sum(arr, low, mid), # El max subarray esta en la izq
+               max_subarray_sum(arr, mid + 1, high), # El max subarray esta en la der
+               max_crossing_sum(arr, low, mid, high)) # El max subarray es combinar ambos
+
+# Función principal para llamar al algoritmo
+def find_max_subarray(arr):
+    return max_subarray_sum(arr, 0, len(arr) - 1)
+
+print(max_subarray_sum([3, 4, -1, 2, 1, -5, 6],0,6))

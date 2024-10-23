@@ -18,15 +18,46 @@ Para esta resolución en RPL, devolver una lista con las posiciones de las casas
 """
 # opt(i) = max( opt(i-1), opt(i-2) + gi )
 
-def lunatuco(ganancias):
+def lunatico(ganancias):
     n = len(ganancias)
-    M = [0] * n
-    M[0] = ganancias[0]
-    M[-1] = ganancias[-1]
-    for i in range(2, n):
-        M[i] = max(M[i-1], M[i-2] + ganancias[i])
-    return M
+    if n == 0:
+        return []
+    if n == 1:
+        return [0]
+    if n == 2:
+        return [0 if ganancias[0] >= ganancias[1] else 1]
 
-print(lunatuco([3, 2, 3, 1, 0, 5])) # [3, 0, 6, 6, 6, 11]
-print(lunatuco([1, 2, 3, 1, 0, 5])) # [1, 0, 4, 4, 4, 9]
-print(lunatuco([3, 2, 3, 1, 0, 5, 1])) # [3, 0, 6, 6, 6, 11, 7]
+    dp1 = [0] * (n-1)
+    dp1[0] = ganancias[0]
+    dp1[1] = max(ganancias[0], ganancias[1])
+    for i in range(2, n-1):
+        dp1[i] = max(ganancias[i] + dp1[i-2], dp1[i-1])
+
+    dp2 = [0] * n
+    dp2[0] = 0
+    dp2[1] = ganancias[1]
+    for i in range(2, n):
+        dp2[i] = max(ganancias[i] + dp2[i-2], dp2[i-1])
+
+    if dp1[-1] > dp2[-1]:
+        casas_robadas = []
+        i = len(dp1) - 1
+        while i > 0:
+            if dp1[i] == dp1[i-1]:
+                i -= 1
+            else:
+                casas_robadas.append(i)
+                i -= 2
+        casas_robadas.append(0)
+        return casas_robadas[::-1]
+    else:
+        casas_robadas = []
+        i = len(dp2) - 1
+        while i > 0:
+            if dp2[i] == dp2[i-1]:
+
+                i -= 1
+            else:
+                casas_robadas.append(i)
+                i -= 2
+        return casas_robadas[::-1]
