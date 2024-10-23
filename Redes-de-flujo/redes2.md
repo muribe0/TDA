@@ -32,6 +32,11 @@ Pasos para resolver:
 4. Se obtiene el matching máximo. Siendo $k = |f|$ la cantidad de aristas en el matching, entonces $k$ es el matching
    máximo.
 
+#### Conclusiones:
+> The size of the maximum matching in $G$ is equal to the value of the
+maximum flow in $G'$; and the edges in such a matching in $G$ are the edges that
+carry flow from $X$ to $Y$ in $G'$.
+
 ```mermaid
 graph LR
     A(A)

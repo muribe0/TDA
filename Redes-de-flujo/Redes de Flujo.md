@@ -120,11 +120,46 @@ Are defined in the residual network. It is a path from $s$ to $t$ in $G_f$.
 
 ## Ford-Fulkerson Algorithm
 
+#### Book
+
+```
+augment(f, P)
+    Let b = bottleneck(P, f)
+    for each edge e in P
+        if e is a forward edge
+            f(e) = f(e) + b
+        else
+            f(e) = f(e) - b
+
+Max-Flow
+    Initially f(e) = 0 fol all e in G
+    While there is an s-t path in the residual graph G_f
+        Let P be a simple s-t path in G_f
+        f' = augment(f, P)
+        Update f to be f'
+        Update the residual graph G_f to be G_f'
+    Return f
+```
+
+#### MIT
+
 1. Start with $f(u,v) = 0$ for all $u,v \in V$
 2. While there is an augmenting path $p$ in $G_f$: (compute $G_f$ given $f$)
     * Find the minimum residual capacity $c_f(p)$
     * Augment the flow along $p$ by $c_f(p)$
     * Update the residual network $G_f$. The flow is now $f`$
+
+**The Residual Graph** Given a flow network $G$, and a flow $f$ on $G$, we define
+the residual graph $G_f$ of $G$ with respect to f as follows:
+
+* The node set of Gf is the same as that of G.
+* For each edge $e = (u, v)$ of $G$ on which $f (e) < c(e)$, there are $c(e) − f (e)$
+  “leftover” units of capacity on which we could try pushing flow forward. So we include the edge $e = (u, v)$ in $G_f$ ,
+  with a capacity of $c(e) − f (e)$. We will call edges included this way forward edges.
+* For each edge $e = (u, v)$ of G on which $f (e) > 0$, there are f (e) units of flow that we can “undo” if we want to, by
+  pushing flow backward. So we include the edge $e' = (v, u)$ in $G_f$ , with a capacity of f (e). Note that $e'$ has the same
+  ends as e, but its
+  direction is reversed; we will call edges included this way backward edges.
 
 Paso 1:
 
@@ -175,7 +210,7 @@ The following are equivalent:
 ![img_10.png](img/img_10network-flow.png)
 
 En este grafo, el uso de DFS puede lograr que se tome el camino largo siempre ($s \rightarrow b \rightarrow a
-\rightarrow t) cada vez y termine tomando demasiado.
+\rightarrow t$) cada vez y termine tomando demasiado.
 Por lo que lo mejor es usar **BFS**.
 
 ### BFS Edmonds Karp
@@ -238,9 +273,19 @@ Given a bipartite graph of people and jobs, find the maximum number of people th
 tasks can we handle?
 If there is an edge (X,i) then X can do job i.
 ![img_6.png](img_6.png)
+
 1. Add a source and sink and edges (s,X) , (i,t)
 2. Restrict the capacities of each edge (s,X) and (i,t) to 1.
 3. Then $|f| = k =$ max matching. (max number of tasks possible)
-![img_5.png](img_5.png)
+   ![img_5.png](img_5.png)
 
+# Notation from the book
 
+* $f : E \rightarrow \mathbb{R}^+$: s-t _flow_ that maps each edge $e$ to a nonnegative real number.
+* $f(e)$: amount of flow carried by edge $e$.
+* Capacity condition: $0 \leq f(e) \leq c(e)$: capacity constraint.
+* Conservation condition: For each node $v$ other than $s$ and $t$ we
+  have: $\sum_{\text{e into v}} f(e) = \sum_{\text{e out of v}} f(e)$
+* $v(f) = \sum_{\text{e out of s}} f(e) = f^{\text{out}}(v)$ : _value_ of a flow $f$ (total flow out of the source).
+* c(A, B) = $\sum_{u \in A, v \in B} c(u, v) = \sum_{\text{e out of A}} c(e)$: capacity of the cut (A, B).
+* 
