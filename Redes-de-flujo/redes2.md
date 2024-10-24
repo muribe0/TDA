@@ -33,9 +33,10 @@ Pasos para resolver:
    máximo.
 
 #### Conclusiones:
+
 > The size of the maximum matching in $G$ is equal to the value of the
-maximum flow in $G'$; and the edges in such a matching in $G$ are the edges that
-carry flow from $X$ to $Y$ in $G'$.
+> maximum flow in $G'$; and the edges in such a matching in $G$ are the edges that
+> carry flow from $X$ to $Y$ in $G'$.
 
 ```mermaid
 graph LR
@@ -140,6 +141,9 @@ Nuevas condiciones
 1. $0 \leq f(e) \leq c_e$ : el flujo de un eje esta acotado por su capacidad
 2. $f_{in}(u) - f_{out}(u) = d$ : la demanda de un nodo es igual a la suma de lo que entra menos lo que sale.
 
+Por lo que para que exista una solucion a este problema de circulación, se debe cumplir:
+$\sum d_v = 0 $. Es decir, $\sum f^{in}(v)-\sum f^{out}(v) = 0$. Por lo que todas las demandas del grafo deben sumar 0.
+
 ```mermaid 
 graph LR
     A("-3") -->|2| C(2)
@@ -148,20 +152,24 @@ graph LR
     C -->|2| D
 ```
 
-Podemos re-escribir el grafo de la siguiente forma:
+Podemos re-escribir el grafo $G$ a $G'$ de la siguiente forma:
 
 1. Agregando un nodo `s` que va a ser la fuente de los nodos con demanda negativa. Este supor nodo `s` tiene como
    finalidad generar esa demanda que generaban los nodos con demanda negativa.
 2. Agregando un nodo `t` que tiene como finalidad absorber la demanda de los nodos con demanda positiva.
 3. Dejando las capacidades intactas.
 
+Ademas, considerando todos los vertices v con demandas positivas $\sum_{d_v > 0} d_v = D$ se sabe que el
+corte $(A, B) = (s, V - s)$ tiene una capacidad $c(A, B) = D$. Luego, el flujo maximo del grafo $G'$ es D **sii** es
+posible la circulacion con demandas de $G$. Esto si es que se cumple que $\sum d_v = 0$ para toda demanda.
+
 ```mermaid
 graph LR
-    s --> |3|A -->|3| C
-    A --> |3|B -->|2| C
-    s --> |3|B -->|2| D
-    C --> |2|D --> |2|t
-    C --> |2|t
+    s -->|3| A -->|3| C
+    A -->|3| B -->|2| C
+    s -->|3| B -->|2| D
+    C -->|2| D -->|2| t
+    C -->|2| t
 ```
 
 Finalmente, se puede aplicar el algoritmo de FF para encontrar la circulación máxima.
@@ -202,41 +210,142 @@ $$
 $$
 
 ## Circulacion con demandas y cotas minimas
+
 Ahora para cada arista, ademas de tener una capacidad tenemos una cota inferior que **debe** cumplirse.
 
 Nuevas condiciones
 
-1. $L_e \leq f(e) \leq c_e$ : el flujo de un eje esta acotado por su capacidad y cota minima.
+1. $l_e \leq f(e) \leq c_e$ : el flujo de un eje esta acotado por su capacidad y cota minima.
 2. $f_{in}(u) - f_{out}(u) = d$ : la demanda de un nodo es igual a la suma de lo que entra menos lo que sale.
 
-Dado un grafo G con demandas y cotas minimas, se puede:
-1. Hacer que la demanda del vertice $v$ sea $d + L_{(u,v)}$. Es decir, hacer que la demanda de un vertice sea la
-   demanda original mas la cota minima de la arista que lo conecta con el vertice $v$.
-2. Agregar un nodo `s` que va a ser la fuente de los nodos con demanda negativa. Este supor nodo `s` tiene como
-   finalidad generar esa demanda que generaban los nodos con demanda negativa.
-3. Agregar un nodo `t` que tiene como finalidad absorber la demanda de los nodos con demanda positiva.
+Dado un grafo $G$ con demandas y cotas minimas, se puede generar $G'$ con las siguientes reglas:
 
+0. Definir en primer lugar:
+    * $L_v = f_0^{\text{in}}(v) - f_0^{\text{out}}(v) = \sum_{\text{e into v}} l_e - \sum_{\text{e out of v}} l_e$: El
+      flujo entrante menos el saliente de un vertie es igual a $L_v$. Aca el 0 indica que es el flujo inicial.
+1. Hacer que la demanda del vertice $v$ sea $d - L_{v}$. Es decir, hacer que la demanda de un vertice sea la
+   demanda original **menos** la sumatoria de las demandas entrantes menos las demandas salientes.
+2. La capacidad de cada eje $e$ sera $c_e - l_e$.
+
+![img.png](img.png)
+En la imagen se puede ver como el unico eje con cota minima tiene $l_e = 2$. El vertice al que dicho eje inside lo
+llamaremos $v$. Donde $v$ tiene $d_v = -3$ por lo que genera 3. Ademaas, $v$ no posee otro eje con demanda y resulta
+$\sum_{\text{e into v}} l_e - \sum_{\text{e out of v}} l_e = 2 - 0 = 2 = L_v$. Donde se ve que:
+
+1. La nueva demanda de $v$ se calcula $d - L_v = -3 - 2 = -5$.
+2. La nueva capacidad del eje $e$ es $c_e - l_e = 3 - 2 = 1$.
+
+> Luego, solo queda resolver el nuevo problema que es el de circulación con demandas.
+
+3. Agregar un nodo `s` que va a ser la fuente de los nodos con demanda negativa. Este supor nodo `s` tiene como
+   finalidad generar esa demanda que generaban los nodos con demanda negativa.
+4. Agregar un nodo `t` que tiene como finalidad absorber la demanda de los nodos con demanda positiva.
 
 ### Ejemplo: Diseño de encuestas
 
-Suponer que tenemos una empresa que vende $k$ productos y tenemos el historial de compras de cada cliente. QUeremos enviar encuestas a $n$ clientes para averiguar cuales son los productos que mas les gusta.
+Suponer que tenemos una empresa que vende $k$ productos y tenemos el historial de compras de cada cliente. QUeremos
+enviar encuestas a $n$ clientes para averiguar cuales son los productos que mas les gusta.
 
 Consideraciones:
+
 1. Cada cliente sera consultado por un subset de productos (y siempre que el/ella hayan comprado).
 2. La cantidad de preguntas a un cliente $i$ debe estar entre algun rango.
 3. Para cada producto $j$ deben haver entre $P_j$ y $P_j '$ preguntas.
 
-![img_7.png](img_7.png)
+![img_7.png](img/img_7.png)
+
+Conclusion: El grafo construido tiene una circulación factible sii se puede realizar la encuesta.
 
 Ejemplo:
 
 ```mermaid
 graph LR
-    s --> |"c2,c2'"|c2 --> |1| p1 & p2 & p3
-    s --> |"c1,c1'"|c1 --> |1| p1 & p2
-    s --> |"c3,c3'"|c3 --> |1| p2 & p3
-    
-    p1 --> |"P1,P1'"| t
-    p2 --> |"P2,P2'"| t
-    p3 --> |"P3,P3'"| t
+    s -->|" c2,c2' "| c2 -->|1| p1 & p2 & p3
+    s -->|" c1,c1' "| c1 -->|1| p1 & p2
+    s -->|" c3,c3' "| c3 -->|1| p2 & p3
+    p1 -->|" P1,P1' "| t
+    p2 -->|" P2,P2' "| t
+    p3 -->|" P3,P3' "| t
 ```
+
+### Seleccion de proyectos
+
+* P Conjunto de proyectos con precendencias.
+* Cada proyecto tiene un costo o una ganancia.
+* Cada proyecto i tiene un retorno economico $p_i$. Si es positivo, genera ganancia. Si es negativo, genera costo.
+* Cada proyecto puede tener un subconjunto de problemas que deben ser resueltos para poder realizarlo.
+* Nuestra idea es maximizar el retorno economico.
+
+##### Podemos
+
+Representar las relaciones entre proyectos como un grafo $G=(V,E)$
+
+##### Cada proyecto i
+
+Es un nodo $i \in V$
+
+##### Cada proyecto j precede a i
+
+Tiene una arista $(j,i) \in E$
+
+![img_1.png](img_1.png)
+
+#### Factibilidad
+
+Un subconjunto de proyectos $A \subseteq P$ es **factible** si los prerequisitos de cada proyecto en $A$, tambien estan
+en $A$. Esto es, si el proyecto $i$ esta en $A$, entonces todos los proyectos $j$ tales que $(j,i) \in E$ tambien estan.
+
+![img_2.png](img_2.png)
+
+#### Ganancia
+
+Dado un subconjunto de proyectos factibles $A$, $$ganancia (A) = \sum_{i \in A} p_i$$
+
+Para todos los proyectos con retornos positivos llamaremos **tope** de ganancia a $$ C = \sum_{i/p_i > 0} p_i$$
+Siendo la sumatoria de proyectos con retorno positivo. Este tope rara vez se consigue alcanzar.
+
+#### Construccion de red
+
+Agregamos:
+
+* Un nodo `s` que es la fuente y un nodo `t` que es el sumidero.
+* Un nodo por cada proyecto
+* Por cada nodo $i$ con $p_i > 0$ agregamos una arista $(s,i)$ con capacidad $p_i$.
+* Por cada nodo $i$ con $p_i < 0$ agregamos una arista $(i,t)$ con capacidad $-p_i$.
+
+| i | 1  | 2  | 3 | 4 | 5 | 6  |
+|---|----|----|---|---|---|----|
+| p | -3 | -1 | 5 | 3 | 1 | -4 |
+
+![img_3.png](img_3.png)
+
+![img_5.png](img_5.png)
+
+Finalmente:
+
+* Por cada relacion $j$ que precede a $i$ agregamos una arista $(j,i)$ con capacidad $\inf$ o $C+1$. Esto es pues ningun
+  corte minimo debe contener un eje con capacidad mayor a $C$. Estos se invierten pero siguen significando lo mismo:
+  para hacer p3 previamente debo hacer p1.
+
+![img_6.png](img_6.png)
+
+#### Afirmamos que el corte minimo s-t
+
+es igual a la ganancia maxima posible.
+
+Si llamamos $C(A', B')$ al corte minimo, entonces los proyectos en $A' - {s}$ son los proyectos a **ejecutar** para
+maximizar la ganancia.
+
+![img_7.png](img_7.png)
+
+En este caso el corte minimo es $C(A', B') = 3 + 1 = 4$. Por lo que la ganancia maxima es 4. Para calcular el corte
+minimo podemos resolver por FF y ver cuales son los nodos accesibles desde s: A' y los que no son accesibles desde s:
+B'.
+
+#### Analisis de la solucion
+
+Sea $C(A',B')$ el corte minimo, si $A$ son los proyectos en el corte minimo, entonces $A'=A\cup \{s\}$
+y $B' = (P - A) \cup \{t\}$.
+Si P cumple las restricciones de precedencia el corte $C(A',B')$ no tendra ejes $(i,j)$ que crucen de $A'$ a $B'$. Esto
+es pporque la capacidad de los ejes $i-j$ es mayor al corte $C(\{s\}, P\cup \{t\})$
+

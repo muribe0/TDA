@@ -21,7 +21,7 @@ graph
 
 ```
 
-![img.png](img.png)
+![img.png](img/img.png)
 
 ## Restricciones
 
@@ -33,11 +33,11 @@ graph
 
 ### 2. Si hay ciclos de 2 vertices: los convierto
 
-![img_1.png](img_1.png)
+![img_1.png](img/img_1.png)
 
 ### 3. Si hay más de una fuente o sumidero: los convierto
 
-![img_2.png](img_2.png)
+![img_2.png](img/img_2.png)
 
 Red residual
 
@@ -61,11 +61,11 @@ Esto aplica a cualquier tipo de grafo
 
 Corte minimo en este recorrido: 9
 
-![img_3.png](img_3.png)
+![img_3.png](img/img_3.png)
 
 ## Teorema de max-flow min-cut
 
-![img_5.png](grafo-redes1.png)
+![img_5.png](img/grafo-redes1.png)
 
 Si el grafo corresponde a una red de flujo, entonces el flujo máximo es igual al corte mínimo.
 
@@ -112,7 +112,7 @@ $c_f(u,v) = c(u,v) - f(u,v) > o$. Edges in $E_f$ admit more flow.
 
 If $(v,u) \notin E, c(v,u) = 0$ but $f(u,v)=-f(v,u)$
 
-![img_8.png](img_8.png)
+![img_8.png](img/img_8.png)
 
 ## Augmenting Path
 
@@ -177,7 +177,7 @@ Some points to say about the next img:
     * If any edge $e$ has positive flow, then we check if there is residual capacity. That is, if $c(e) > f(e)$, then we
       create the fordward edge $e'$ with capacity $c(e) - f(e)$.
    
-![img_9.png](img_9.png)
+![img_9.png](img/img_9.png)
 
 Paso 1:
 
@@ -290,12 +290,12 @@ $4 + 4 + 4 + 1 + 5 + 7 = 25 < 26$ so Detroit is eliminated.
 Given a bipartite graph of people and jobs, find the maximum number of people that can be matched to jobs. So how many
 tasks can we handle?
 If there is an edge (X,i) then X can do job i.
-![img_6.png](img_6.png)
+![img_6.png](img/img_6.png)
 
 1. Add a source and sink and edges (s,X) , (i,t)
 2. Restrict the capacities of each edge (s,X) and (i,t) to 1.
 3. Then $|f| = k =$ max matching. (max number of tasks possible)
-   ![img_5.png](img_5.png)
+   ![img_5.png](img/img_5.png)
 
 # Notation from the book
 
