@@ -227,7 +227,7 @@ Dado un grafo $G$ con demandas y cotas minimas, se puede generar $G'$ con las si
    demanda original **menos** la sumatoria de las demandas entrantes menos las demandas salientes.
 2. La capacidad de cada eje $e$ sera $c_e - l_e$.
 
-![img.png](img.png)
+![img.png](img/imgffff.png)
 En la imagen se puede ver como el unico eje con cota minima tiene $l_e = 2$. El vertice al que dicho eje inside lo
 llamaremos $v$. Donde $v$ tiene $d_v = -3$ por lo que genera 3. Ademaas, $v$ no posee otro eje con demanda y resulta
 $\sum_{\text{e into v}} l_e - \sum_{\text{e out of v}} l_e = 2 - 0 = 2 = L_v$. Donde se ve que:
@@ -288,14 +288,14 @@ Es un nodo $i \in V$
 
 Tiene una arista $(j,i) \in E$
 
-![img_1.png](img_1.png)
+![img_1.png](img/img_1ff.png)
 
 #### Factibilidad
 
 Un subconjunto de proyectos $A \subseteq P$ es **factible** si los prerequisitos de cada proyecto en $A$, tambien estan
 en $A$. Esto es, si el proyecto $i$ esta en $A$, entonces todos los proyectos $j$ tales que $(j,i) \in E$ tambien estan.
 
-![img_2.png](img_2.png)
+![img_2.png](img/img_2img_1ff.png)
 
 #### Ganancia
 
@@ -317,9 +317,9 @@ Agregamos:
 |---|----|----|---|---|---|----|
 | p | -3 | -1 | 5 | 3 | 1 | -4 |
 
-![img_3.png](img_3.png)
+![img_3.png](img/img_3ff.png)
 
-![img_5.png](img_5.png)
+![img_5.png](img/img_5ff.png)
 
 Finalmente:
 
@@ -327,7 +327,7 @@ Finalmente:
   corte minimo debe contener un eje con capacidad mayor a $C$. Estos se invierten pero siguen significando lo mismo:
   para hacer p3 previamente debo hacer p1.
 
-![img_6.png](img_6.png)
+![img_6.png](img/img_6ff.png)
 
 #### Afirmamos que el corte minimo s-t
 
@@ -336,7 +336,7 @@ es igual a la ganancia maxima posible.
 Si llamamos $C(A', B')$ al corte minimo, entonces los proyectos en $A' - {s}$ son los proyectos a **ejecutar** para
 maximizar la ganancia.
 
-![img_7.png](img_7.png)
+![img_7.png](img/img_7ff.png)
 
 En este caso el corte minimo es $C(A', B') = 3 + 1 = 4$. Por lo que la ganancia maxima es 4. Para calcular el corte
 minimo podemos resolver por FF y ver cuales son los nodos accesibles desde s: A' y los que no son accesibles desde s:
