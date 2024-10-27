@@ -241,7 +241,11 @@ Para el grafo original G $/\forall v \in IS$ por lo que $G^c$ (complemento de G)
 1. Obtenemos el grafo complemento de G. -> **Aristas** que no estan en G.
 2. Definimos que hay un IS de al menos K vertices sii hay un clique de tamaño K en el grafo complemento.
 
-Si en el grafo G $ \exists IS \geq k \Leftarrow\Rightarrow \exists K-C \geq k$ para el grafo complementario $G^c$.
+En el grafo $G$ $\exists \text{IS } \geq k \Leftarrow\Rightarrow \exists K-C \geq k$ para el grafo complementario $G^c$.
+
+Grafo complemento:
+
+![img_8.png](img_8.png)
 
 Debo demostrar la idea.
 
@@ -282,6 +286,7 @@ $PL \in NP$,
 $PLE \in NP-Completo$
 
 ## Coloreo de Grafos
+
 Cuando k = 2 $\rightarrow$ es bipartito.
 Cuando k = 3 $\rightarrow$ NP-completo.
 
@@ -289,7 +294,9 @@ Cuando k = 3 $\rightarrow$ NP-completo.
 2. 3-SAT $\leq_p$ Coloreo de Grafos: veremo
 
 1. Crear un nodo por cada variable $x_i$ y un nodo por su complemento $\overline{x_i}$.
-2. Unir los vertices de variables con sus complementos. -> con esto aseguramos que no haya contradicciones entre una variable y su complemento. Ya que si estan unidos, no pueden tener el mismo color (es decir, no pueden tener el mismo valor de verdad). 
+2. Unir los vertices de variables con sus complementos. -> con esto aseguramos que no haya contradicciones entre una
+   variable y su complemento. Ya que si estan unidos, no pueden tener el mismo color (es decir, no pueden tener el mismo
+   valor de verdad).
 3. Creamos 3 nodos especiales: True, False, Base.
 4. Unimos a cada varaible y complemento con Base para formar triangulos
 5. Unimos True con todas las variables y False con todos los complementos.
@@ -299,8 +306,213 @@ Cuando k = 3 $\rightarrow$ NP-completo.
 ![img_4.png](img_4.png)
 
 ## Subset Sum
+
 Recordamos: dado un conjunto de n elementos y un peso W, existe un subconjunto que sume exactamente W?
 
 Por progamacion dinamica: O(nW) $\rightarrow$ es pesudopolinomial.
 
 Susbset Sum es NP-completo
+
+## Vetex Cover vs Set Cover
+
+| Grafo                   | Subsets                 |
+|-------------------------|-------------------------|
+| ![img_5.png](img_5.png) | ![img_6.png](img_6.png) |
+
+## SAT and 3-SAT
+
+Given a set $X$ of $n$ _Boolean variables_ $x_1, \dots x_n$; each can take the value 0 or 1. A set $C$ of _clauses_
+over $X$, is a set of disjunctions of distinct terms. $$ t_1 \vee t_2 \vee \dots \vee t_k $$ where each
+term $t_i \in \{x_1, x_2, \dots, x_n, \overline{x_1}, \dots, \overline{x_k} \}$.
+
+A _truth assignment_ for $X$ is one of the value 0 or 1 to each $x_i$. That is, $v:X \rightarrow \{0,1\}$. The
+assignment $v$ implicitly gives $v(\overline{x_i}) = 1 - v(x_i)$.
+
+An assignment _satisfies_ a clause C if it casuses C to evaluate to 1 under boolean rules. That is,
+if $C_1 \wedge C_2 \wedge \dots \wedge C_k$ is true.
+
+## 3-SAT to Independent Set
+
+here is how we encode it using independent sets in a graph. First, construct a
+graph G = (V , E) consisting of 3k nodes grouped into k triangles as shown in
+Figure.
+
+![img_7.png](img_7.png)
+
+That is, for i = 1, 2, . . . , k, we construct three vertices vi1 , vi2 , vi3
+joined to one another by edges. We give each of these vertices a label; vij is
+labeled with the j th term from the clause Ci of the 3-SAT instance.
+
+Clase 3
+
+## Dominating Set vs Vertex Cover
+
+Dominating Set: Dado un grafo, el DS es un subconjunto en el que todos los vertices o bien estan en el conjunto, o son
+adyacentes a alguno de los vertices del conjunto
+
+Dado un grafo y un numero k, existe un DS de tamaño k?
+
+![img_9.png](img_9.png)
+
+> Existe un DS de tamaño k sii existe un IS de tamaño |V|-k
+
+#### DS es NP
+
+El verificador recibe la solucion y chequea si es valida en tiempo polinomial. Hay que fijarse que todos los vertices
+esten en el conjunto o sean adyacentes a alguno del conjunto.
+
+#### Reduccion
+
+Podemos usar Vertex Cover (VC). $DS \leq_p VC$.
+
+* $VC \leq_p DS$
+  Podemos armar un grafo G' a partir de G. Por cada vertice de G, creamos un vertice en G'.
+  Por cada arista de G, creamos un vertice en G'. Por lo que si hay un VC de tamaño k en G, entonces hay un DS de tamaño
+  k en G'.
+
+Vamos a probar que Dominating Set (DS) es NP-completo. Para esto, necesitamos:
+
+1. Probar que DS está en NP
+2. Reducir Vertex Cover (VC) a DS (ya que sabemos que VC es NP-completo)
+
+**1. DS está en NP:**
+
+- Dado un certificado (un conjunto D de vértices)
+- Podemos verificar en tiempo polinomial si D es un dominating set:
+    * Para cada vértice v ∉ D, verificar si tiene un vecino en D
+    * Esto toma O(|V| + |E|)
+
+**2. Reducción de VC a DS:**
+Vamos a construir una reducción que transforme una instancia de VC a una instancia de DS.
+
+![img_10.png](img_10.png)
+
+La reducción funciona así:
+
+1. **Transformación del grafo G a G':**
+    - Para cada arista e = (u,v) en G:
+        * Añadir un nuevo vértice we en G'
+        * Conectar we a u y v
+    - Mantener todas las aristas originales
+
+2. **Probar que G tiene un vertex cover de tamaño ≤ k si y solo si G' tiene un dominating set de tamaño ≤ k**
+
+**→ (Si G tiene un VC de tamaño k, entonces G' tiene un DS de tamaño k):**
+
+- Sea C un vertex cover de G de tamaño k
+- Tomemos el mismo conjunto C en G'
+- Para cada arista e en G:
+    * Al menos un extremo está en C (por ser VC)
+    * El nuevo vértice we está dominado por ese extremo
+- Los vértices originales están conectados igual que en G
+- Por lo tanto, C es un dominating set en G'
+
+**← (Si G' tiene un DS de tamaño k, entonces G tiene un VC de tamaño ≤ k):**
+
+- Sea D un dominating set de G' de tamaño k
+- Si D contiene algún we, podemos reemplazarlo por uno de sus vecinos
+- Este nuevo conjunto D' es:
+    * Del mismo tamaño o menor que D
+    * Solo contiene vértices originales
+    * Sigue siendo un dominating set
+- D' debe ser un vertex cover en G porque:
+    * Cada we debe estar dominado
+    * Esto solo es posible si al menos un extremo de su arista original está en D'
+
+3. **La reducción es polinomial:**
+
+- |V'| = |V| + |E|
+- |E'| = |E| + 2|E| = 3|E|
+- La construcción toma tiempo O(|V| + |E|)
+
+Por lo tanto:
+
+1. DS está en NP
+2. Existe una reducción polinomial de VC a DS
+3. VC es NP-completo
+
+Concluimos que Dominating Set es NP-completo.
+
+## Dominating Set vs 3-SAT
+
+Si una variable $x_i \in DS \Rightarrow x_i = 1$, caso contrario $x_i = 0$.
+
+1. Partiendo de $n$ variables y $m$ clausulas. Creamos un grafo de $3n + m$ nodos. Tenemos un nodo por variable ($x_j$),
+   por cada complemento, y uno extra (u_i) por cada clausula.
+
+2. Formamos triangulos entre el vertice $x_i$, su complemento y su extra -> El extra solo se une a una variable o
+   complemente -> uno de los dos debe quedar seleccionado.
+
+# PSPACe
+
+## Complemento a un problema
+
+Cuando tengamos que demostrar si algo es NP o no, el verificador va a recibir una solucion y el problema.
+
+Definimos $\overline{X}$ como el complemento de un problema $X$. Es decir, es un problema donde algo que tenga solucion
+en $X$ no la tiene $\overline{X}$ y viceversa.
+
+La solucion de $\overline{X}$ es la negacion de la solucion de $X$.
+
+Un ejemplo es $X$ = Problema del viajante.
+
+Notar que si $X \in P \Rightarrow \overline{X} \in P$. Naturalmente, si soluciono rapido un problema, tambien puedo ver
+si no tiene solucion rapidamente.
+
+Y si $X \in NP$? No se sabe.
+
+"Para todo camino/seleccion/..." sucede que no hay solucion.
+
+### Clase "co-NP" es el complemento de NP.
+
+Si un problema pertenece a NP $\rightarrow$ es facil demostrar cuando algo es solucion
+
+Si un problema pertenece a co-NP $\rightarrow$ es facil demostrar que algo no es solucion/no tiene solucion.
+
+### NP = co-NP?
+
+No sabemos. Se cree que no y ademas si $NP \neq co-NP$ entonces $P \neq NP$.
+
+Pero sabemos que $P \subseteq NP \cap co-NP$. Sabemos que si $X \in NP \Rightarrow \overline{X} \in co-NP$ y visceversa.
+
+## PSPACE
+
+Problemas que se resuelven con un algoritmo que consume una cantidad polinomial de espacio
+
+1. Mergesort $\in$ PSPACE
+2. Fibonnaci $\in$ PSPACE
+3. P $\in$ PSPACE
+
+### Momento...
+
+Supongamos que queremos contar desde 0 a $2^n - 1$. Si usamos un contador de n bits, necesitamos $n$ bits de espacio.
+Por lo que necesito O(n) espacio (bits). Ya que para
+representar $2^n - 1 = \underbrace{111111111....1111}_{\text{n bits}}$
+Con una sola variable, esto ocupa O(n) espacio en total. $\therefore \in$ PSPACE
+
+> _El espacio se puede reutilizar, pero el tiempo no_
+
+Dado un juego de jarras donde tenemos una jarra (a, b) con la jarra $a$ con capacidad 5 y la jarra $b$ con capacidad 3.
+Se busca jugar con las siguientes reglas:
+
+1. Llenar una jarra
+2. Vaciar una jarra
+3. Pasar de una jarra a otra
+
+El objtetivo final es tener 4 litros en la jarra $a$.
+
+Seguimiento de BFS planteando un grafo con los estados posibles. Cada vertice es un estado posible.
+Este grafo dirigido tiene todas las $2^n$ posibles configuraciones con aristas que representan las acciones posibles.
+Ejemplo: de $(5, 0) \rightarrow (2, 3)$.
+
+![img_11.png](img_11.png)
+
+Existe un camino de $C_0$ a $C^*$?
+En el peor de los casos tenemos que pasar por todos los estados posibles (O($2^n$)).
+
+Resolvamos...
+
+1. En lugar de crear el grafo de las configuraiocnes, vamos a crear el arbol de BFS.
+2. Para cada posible $C'$ vem,oms que podemos llegar de $C_1$ a $C'$ en hasta $L/2$ pasos y de $C_2$ a $C'$ en
+   hasta $L/2$ pasos. Esto logra que lleguemos de $C_1$ a $C_2$ en $L$ pasos.
+

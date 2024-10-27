@@ -10,6 +10,9 @@ class Edge:
     def get_residual_capacity(self):
         return self.capacity - self.flow
 
+    def __repr__(self):
+        return f'{self.source} -> {self.target}'
+
 class Vertex:
     def __init__(self, name):
         self.visited = False
@@ -43,6 +46,9 @@ class Vertex:
     def __hash__(self):
         return hash(self.name)
 
+    def __repr__(self):
+        return self.name
+
 class Graph:
     def __init__(self, vertices=None, edges=None):
         self.vertices = set(vertices) if vertices is not None else set()
@@ -62,6 +68,10 @@ class Graph:
     def get_edge(self, source, target):
         return source.get_edge_to(target)
 
+    def set_all_flows(self, flow):
+        for edge in self.edges:
+            edge.flow = flow
+
     def augmenting_path(self, s, t):
         if s not in self.vertices or t not in self.vertices:
             return None
@@ -71,17 +81,19 @@ class Graph:
 
         while cola:
             actual = cola.popleft()
-            if actual.visited():
+            if actual.visited:
                 continue
             actual.visit()
             for edge in actual.get_edges():
                 target = edge.target
-                if not target.visited() and edge.get_residual_capacity() > 0:
+                if not target.visited and edge.get_residual_capacity() > 0:
                     parent_edge[target] = edge
                     if target == t:
                         path = []
                         while target:
                             edge = parent_edge[target]
+                            if not edge:
+                                break
                             path.append(edge)
                             target = edge.source
 

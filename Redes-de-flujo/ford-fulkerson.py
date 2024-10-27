@@ -25,7 +25,7 @@ def max_flow(graph, s, t):
         path = Gf.augmenting_path(s, t)
     return 0
 
-def generar_grafo():
+def generar_grafo_simple():
     s = Vertex('s')
     A = Vertex('A')
     B = Vertex('B')
@@ -53,4 +53,9 @@ def generar_grafo():
     D.add_edge(edges[6])
     D.add_edge(edges[7])
 
-    return grafo
+    return grafo, s, t
+
+grafo1, s1, t1 = generar_grafo_simple()
+
+resultado = max_flow(grafo1, s1, t1)
+print(resultado)
