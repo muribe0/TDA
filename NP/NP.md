@@ -93,7 +93,7 @@ $SAT \leq_p 3SAT$. -> no tan trivial
 3. Ponemos aristas en prosibles conflictos (variables opuestas)
 4. Se puede demostrar que G tiene un set independiente de tamanio $k$ sii el 3SAT es satisfacible.
 
-![img.png](img.png)
+![img.png](img/img.png)
 
 ```mermaid
 graph LR
@@ -188,7 +188,7 @@ Teorema de Cook & Levin: Circuit SAT es NP-Completo.
 
 Circuit SAT: Dado un circuito, existe una asignacion de valores de verdad que haga que el circuito sea verdadero?
 
-![img_1.png](img_1.png)
+![img_1.png](img/img_1.png)
 
 Siempre decimos que $Y \leq_p X$ si es que al problema $Y$ puedo reducirlo a $X$ y resolver $X$ con una caja negra que
 lo resuelve en tiempo polinomial y podemos usarla una cantidad polinomial de veces.
@@ -225,10 +225,10 @@ Opciones:
 * Es A multiplo de B?
 * Para esto deberiamos tener una lista con los multiplos de B desde 0 hasta A. Si A esta en la lista, es multiplo.
 
-#### 2. Ver si K-clique es NP-Completo usando Independent Set
+## 2. K-Clique vs Independent Set
 
 A clique, C, in an undirected graph G = (V, E) is a subset of the vertices, C ⊆ V, such that every two distinct vertices
-are adjacent.![img_2.png](img_2.png)
+are adjacent.![img_2.png](img/img_2.png)
 
 Sabemos que es NP pues podemos verificarlo con un certificador eficiente: hay que ver que todos los vertices del
 subgrafo tengan igual grado a la cantidad de vertices del subgrafo.
@@ -238,14 +238,14 @@ IS: existe un conjunto de vertices de tamaño k tal que no haya aristas entre el
 
 Para el grafo original G $/\forall v \in IS$ por lo que $G^c$ (complemento de G) tiene un clique de tamaño k.
 
-1. Obtenemos el grafo complemento de G. -> **Aristas** que no estan en G.
+1. Obtenemos el grafo complemento de G. $\rightarrow$ **Aristas** que no estan en G.
 2. Definimos que hay un IS de al menos K vertices sii hay un clique de tamaño K en el grafo complemento.
 
 En el grafo $G$ $\exists \text{IS } \geq k \Leftarrow\Rightarrow \exists K-C \geq k$ para el grafo complementario $G^c$.
 
 Grafo complemento:
 
-![img_8.png](img_8.png)
+![img_8.png](img/img_8.png)
 
 Debo demostrar la idea.
 
@@ -301,9 +301,9 @@ Cuando k = 3 $\rightarrow$ NP-completo.
 4. Unimos a cada varaible y complemento con Base para formar triangulos
 5. Unimos True con todas las variables y False con todos los complementos.
 
-![img_3.png](img_3.png)
+![img_3.png](img/img_3.png)
 
-![img_4.png](img_4.png)
+![img_4.png](img/img_4.png)
 
 ## Subset Sum
 
@@ -311,13 +311,15 @@ Recordamos: dado un conjunto de n elementos y un peso W, existe un subconjunto q
 
 Por progamacion dinamica: O(nW) $\rightarrow$ es pesudopolinomial.
 
-Susbset Sum es NP-completo
+> _Susbset Sum es NP-completo_
+
+
 
 ## Vetex Cover vs Set Cover
 
-| Grafo                   | Subsets                 |
-|-------------------------|-------------------------|
-| ![img_5.png](img_5.png) | ![img_6.png](img_6.png) |
+| Grafo                       | Subsets                     |
+|-----------------------------|-----------------------------|
+| ![img_5.png](img/img_5.png) | ![img_6.png](img/img_6.png) |
 
 ## SAT and 3-SAT
 
@@ -337,13 +339,30 @@ here is how we encode it using independent sets in a graph. First, construct a
 graph G = (V , E) consisting of 3k nodes grouped into k triangles as shown in
 Figure.
 
-![img_7.png](img_7.png)
+![img_7.png](img/img_7.png)
 
-That is, for i = 1, 2, . . . , k, we construct three vertices vi1 , vi2 , vi3
-joined to one another by edges. We give each of these vertices a label; vij is
-labeled with the j th term from the clause Ci of the 3-SAT instance.
+That is, for $i = 1, 2, \dots , k$, we construct three vertices $v_{i1} , v_{i2} , v_{i3}$
+joined to one another by **edges**. We give each of these vertices a label; $v_{ij}$ is
+labeled with the $j^{\text{th}}$  term from the clause $C_i$ of the 3-SAT instance.
 
-Clase 3
+Since no two vertices cannot be selected from the same triangle, they consist of all ways of choosing one vertex from
+each of the triangles. This is implementing our goal of choosing a term in each clause that will evaluate to 1; but we
+have so far not prevented ourselves from choosing two terms that conflic.
+
+We enconce conflicts by adding some more edges to the graph: For each pair of vertices whose labels correspond to terms
+that conflict, we add an edge in between them. This ensures that no two vertices that conflict can be selected in the
+same independent set.
+
+Let’s claim, precisely, that the original 3-SAT instance is satisfiable if and
+only if the graph G we have constructed has an independent set of size at least
+k. First, if the 3-SAT instance is satisfiable, then each triangle in our graph
+contains at least one node whose label evaluates to 1.
+
+We claim S is independent; for if there
+were an edge between two nodes u, v ∈ S, then the labels of u and v would
+have to conflict; but this is not possible, since they both evaluate to 1.
+
+# Clase 3
 
 ## Dominating Set vs Vertex Cover
 
@@ -352,7 +371,7 @@ adyacentes a alguno de los vertices del conjunto
 
 Dado un grafo y un numero k, existe un DS de tamaño k?
 
-![img_9.png](img_9.png)
+![img_9.png](img/img_9.png)
 
 > Existe un DS de tamaño k sii existe un IS de tamaño |V|-k
 
@@ -385,7 +404,7 @@ Vamos a probar que Dominating Set (DS) es NP-completo. Para esto, necesitamos:
 **2. Reducción de VC a DS:**
 Vamos a construir una reducción que transforme una instancia de VC a una instancia de DS.
 
-![img_10.png](img_10.png)
+![img_10.png](img/img_10.png)
 
 La reducción funciona así:
 
@@ -443,76 +462,113 @@ Si una variable $x_i \in DS \Rightarrow x_i = 1$, caso contrario $x_i = 0$.
 2. Formamos triangulos entre el vertice $x_i$, su complemento y su extra -> El extra solo se une a una variable o
    complemente -> uno de los dos debe quedar seleccionado.
 
-# PSPACe
+## 3-Dimentional-Matching vs 3-SAT
 
-## Complemento a un problema
+#### 3-Dimentional-Matching (3DM)
 
-Cuando tengamos que demostrar si algo es NP o no, el verificador va a recibir una solucion y el problema.
+Given disjoints sets $X,Y,Z$ each size n.
+Given **triples** $T \subseteq X \times Y \times Z$.
 
-Definimos $\overline{X}$ como el complemento de un problema $X$. Es decir, es un problema donde algo que tenga solucion
-en $X$ no la tiene $\overline{X}$ y viceversa.
+is there a subset $S \subseteq T$ of size n such that each element of $X \cup Y \cup Z$ appears in exactly one
+triple $s \in S$?
 
-La solucion de $\overline{X}$ es la negacion de la solucion de $X$.
+Triples that are allowed ($\in T$):
 
-Un ejemplo es $X$ = Problema del viajante.
+![img.png](img.png)  ![img_1.png](img_1.png)
 
-Notar que si $X \in P \Rightarrow \overline{X} \in P$. Naturalmente, si soluciono rapido un problema, tambien puedo ver
-si no tiene solucion rapidamente.
+$2n_{x_i}$ wheel, which is the number of occurences of $x_i$ in the triples.
 
-Y si $X \in NP$? No se sabe.
+* Clause: $x_i \vee \overline{x_j} \vee x_k $: ![img_2.png](img_2.png)
 
-"Para todo camino/seleccion/..." sucede que no hay solucion.
+Whithin this gadget,
 
-### Clase "co-NP" es el complemento de NP.
+...
 
-Si un problema pertenece a NP $\rightarrow$ es facil demostrar cuando algo es solucion
+## 3-SAT vs Hamiltonian Cycle
 
-Si un problema pertenece a co-NP $\rightarrow$ es facil demostrar que algo no es solucion/no tiene solucion.
+#### Hamiltonian Cycle (HC)
 
-### NP = co-NP?
+Given a directed graph $G = (V,E)$, we say that a cycle $C$ in $G$ is a _Hamiltonian cycle_ if it visists each vertex
+exacly once.
 
-No sabemos. Se cree que no y ademas si $NP \neq co-NP$ entonces $P \neq NP$.
+![img_3.png](img_3.png)
+1, 6, 4, 3, 2, 5, 1 is a Hamiltonian cycle.
 
-Pero sabemos que $P \subseteq NP \cap co-NP$. Sabemos que si $X \in NP \Rightarrow \overline{X} \in co-NP$ y visceversa.
+Hamiltonian Cycle is NP-complete.
+Proof. We first show that Hamiltonian Cycle is in NP. Given a directed graph $G = (V , E)$, a certificate that there is
+a solution would be the ordered list of the vertices on a Hamiltonian cycle. We could then check, in polynomial time,
+that this list of vertices does contain each vertex exactly once, and that each consecutive pair in the ordering is
+joined by an edge; this would establish that the ordering defines a Hamiltonian cycle.
 
-## PSPACE
+Next, we show that 3-SAT can be reduced to Hamiltonian Cycle, such that: $$ \text{3-SAT} \leq_p \text{HC} $$
 
-Problemas que se resuelven con un algoritmo que consume una cantidad polinomial de espacio
+1. We begin by defining a graph that contains $2^n$ different Hamiltonian cycles, one for each possible truth
+   assignment (
+   like the originial problem, 3-SAT).
 
-1. Mergesort $\in$ PSPACE
-2. Fibonnaci $\in$ PSPACE
-3. P $\in$ PSPACE
+2. We construct $n$ paths $P_1, \dots, P_n$ where $P_i$ consists of nodes $v_{i1}, v_{i2}, \dots, v_{ib}$ for a
+   quaantity $b$ that we take to be somewhat larger than the number of clauses $k$: say, $ b= 3k + 3$. There are edges
+   from $v_{ij}$ to $v_{i,j+1}$ and in the opposite direction from $v_{i,j+1}$ to $v_{ij}$. Thus $P_i$ can be traversed
+   left to right, from $v_{i1}$ to $v_{ib}$, or right to left.
 
-### Momento...
+3. ![img_4.png](img_4.png)
 
-Supongamos que queremos contar desde 0 a $2^n - 1$. Si usamos un contador de n bits, necesitamos $n$ bits de espacio.
-Por lo que necesito O(n) espacio (bits). Ya que para
-representar $2^n - 1 = \underbrace{111111111....1111}_{\text{n bits}}$
-Con una sola variable, esto ocupa O(n) espacio en total. $\therefore \in$ PSPACE
+4. ...
 
-> _El espacio se puede reutilizar, pero el tiempo no_
+## Traveling Salesman vs Hamiltonian Cycle
 
-Dado un juego de jarras donde tenemos una jarra (a, b) con la jarra $a$ con capacidad 5 y la jarra $b$ con capacidad 3.
-Se busca jugar con las siguientes reglas:
+The question is: _Given a set of distances on n cities, and a bound D, is there a tour of length
+at most D?_
 
-1. Llenar una jarra
-2. Vaciar una jarra
-3. Pasar de una jarra a otra
+> Traveling Salesman is NP-complete.
 
-El objtetivo final es tener 4 litros en la jarra $a$.
+**Proof**. It is easy to see that Traveling Salesman is in NP: The certificate
+is a permutation of the cities, and a certifier checks that the length of the
+corresponding tour is at most the given bound.
 
-Seguimiento de BFS planteando un grafo con los estados posibles. Cada vertice es un estado posible.
-Este grafo dirigido tiene todas las $2^n$ posibles configuraciones con aristas que representan las acciones posibles.
-Ejemplo: de $(5, 0) \rightarrow (2, 3)$.
+We want to show that Hamiltonian Cycle can be reduced to Traveling Salesman, such
+that: $$ \text{HC} \leq_p \text{TSP} $$
+Recall that the distance $D = \sum_j d(v_{i_j}, v_{i_{j+1}}) + d(v_{i_n}, v_{i_1}$, where the last term is the distance
+to comeback to the starting city.
 
-![img_11.png](img_11.png)
+Given a graph $G = (V,E)$ we construct it to have the same setting as a trabeling salesman problem
 
-Existe un camino de $C_0$ a $C^*$?
-En el peor de los casos tenemos que pasar por todos los estados posibles (O($2^n$)).
+1. For each vertex $v \in G$ we create a city $c_v$.
+2. For each edge (v,u) in G, we set the distance between $c_v$ and $c_u$ to be 1 if (v,u) is in E, and to be 2
+   otherwise.
+3. We set the bound D to be $|V|$.
 
-Resolvamos...
+This instance of the TS problem
+> If $S_{\text{TS}}$ is a "yes" instance of TS, then $S_{\text{HC}}$ is a "yes" instance of HC.
 
-1. En lugar de crear el grafo de las configuraiocnes, vamos a crear el arbol de BFS.
-2. Para cada posible $C'$ vem,oms que podemos llegar de $C_1$ a $C'$ en hasta $L/2$ pasos y de $C_2$ a $C'$ en
-   hasta $L/2$ pasos. Esto logra que lleguemos de $C_1$ a $C_2$ en $L$ pasos.
+**Proof**. If the solution is a "yes" for this instance of TS, we know that:
+
+* every city has been visited
+* the tour is a cycle
+* the cycle visits each city exactly once
+* the total distance is at most $|V|$
+* the cycle only takes the edges (paths) of value 1 because
+  the $D = \sum_j d(v_{i_j}, v_{i_{j+1}}) + d(v_{i_n}, v_{i_1}$ where each distance must be 1, for this to be
+  true: $D = |V|$
+  So since it is a cycle and every node (city) of $G$ has been visited, and the edged used are only the edges that
+  belong to the graph $G$, then the solution is a **"yes" for the HC problem**.
+
+> If $S_{\text{HC}}$ is a "yes" instance of HC, then $S_{\text{TS}}$ is a "yes" instance of TS.
+
+**Proof.** If the solution is a "yes" for this instance of HC, we know that:
+
+* The solution is a cycle
+* Every node is included and visited exactly once
+* The number of nodes visited is $|V|$
+* Then it follow that the total distance in the SP problem is $|V|$ because the instance of HC that has given a "yes"
+  has gone through edged that have been set to have a distance of 1.
+
+**Therefore, it is a "yes" for the TS problem.**
+
+## Subset Sum vs
+
+#### Subset Sum
+
+> _Given natural numbers $w1, \dots , wn$, and a target number $W$, is there a subset of ${w1, \dots , wn}$ that adds up
+to precisely W?_
 
