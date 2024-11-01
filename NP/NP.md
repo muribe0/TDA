@@ -313,8 +313,6 @@ Por progamacion dinamica: O(nW) $\rightarrow$ es pesudopolinomial.
 
 > _Susbset Sum es NP-completo_
 
-
-
 ## Vetex Cover vs Set Cover
 
 | Grafo                       | Subsets                     |
@@ -565,10 +563,337 @@ This instance of the TS problem
 
 **Therefore, it is a "yes" for the TS problem.**
 
-## Subset Sum vs
+## Subset Sum vs Scheduling with release and deadlines
 
-#### Subset Sum
+#### Subset Sum is NP-Complete
 
 > _Given natural numbers $w1, \dots , wn$, and a target number $W$, is there a subset of ${w1, \dots , wn}$ that adds up
 to precisely W?_
+
+#### Scheduling with release and deadlines
+
+Suppose we are given a set of $n$ jobs that must be run on a single machine. Each job $i$ has a release time $r_i$ when
+it is first available for processing; a deadline $d_i$ by which it must be completed; and a processing duration $t_i$.
+We will assume that all of these parameters are natural numbers. In order to be completed, job $i$ must be allocated a
+contiguous slot of $t_i$ time units somewhere in the interval $[r_i , d_i]$. The machine can run only one job at a time.
+The question is:  Can we schedule all jobs so that each completes by its deadline?
+
+> Scheduling with release and deadlines is NP-complete.
+
+**Proof.** Given an isntance of the problem, it is trivial to check in polynomial time if the solution is correct.
+
+Now, we need to prove that $\text{Subset Sum} \leq_p \text{Scheduling}$. This can be done by reducing a general instance
+of the Subset Sum problem to an instance of the Scheduling problem.
+
+1. Let $S = \sum_{i=1}^n w_i$. We define jobs $1, \dots , n$ with release times $r_i = 0$, deadlines $d_i = S$, and
+   processing times $t_i = w_i$. This garantees that all jobs can be completed by their deadlines.
+2. We define an **additional** job $n+1$ with release time $W$ and deadline $W+1$. With proccesing time $t_{n+1} = 1$.
+   Therefore, this job would only be possible to be completed in the interval $[W, W+1]$.
+3. So we imagine that if this scheduling problem has a solution, then the job $n+1$ would be scheduled in the interval
+   $[W, W+1]$. This would mean that the sum of the processing times of the jobs that are scheduled before (in the
+   interval
+   $[0, W]$) would be equal to $W$ and with no time to spare since the only way to schedule all jobs would be to
+   accumulate $S+1$ time units of processing time. This would mean that the Subset Sum problem has a solution.
+4. Conversely, if the Subset Sum problem has a solution, then the sum of the processing times of the jobs that are
+   scheduled before job $n+1$ would be equal to $W$. This would mean that the job $n+1$ would be scheduled in the
+   interval $[W, W+1]$. This would mean that the Scheduling problem has a solution.
+
+# PRACTICA
+
+## Independent Set vs K-Clique
+
+For Independent Set:
+> _Given a graph $G = (V,E)$ and an integer $k$, is there a set $S \subseteq V$ of size $\leq k$ such that no two
+vertices
+> in $S$ are adjacent?_
+
+For K-Clique:
+> _Given a graph $G = (V,E)$ and an integer $k$, is there a set $S \subseteq V$ of size $\leq k$ such that every two
+> vertices in $S$ are adjacent?_
+
+Quiero ver si $\text{IS} \leq_p \text{K-Clique}$
+
+Dado un grafo $G = (V, E)$, quiero ver si hay un IS de tamaño $k$ usando la caja negra de K-Clique. Para eso, me armo
+una instancia de K-Clique que, si tiene solucion, entonces la instancia de IS tambien tiene solucion.
+
+1. Creo un grafo $G' = (V, E')$ donde $E' = $"todos los pares de vertices que no estan conectados en $G$".
+2. Pregunto si hay un K-Clique en $G'$.
+
+> A) Si hay un K-Clique de tamaño $k$ en $G'$, entonces hay un IS de tamaño $k$ en $G$.
+> B) Si hay un IS de tamaño $k$ en $G$, entonces hay un K-Clique de tamaño $k$ en $G'$.
+
+Metodo directo
+
+* A) Suponiendo una respuesta afirmativa del K-CLique, entonces los vertices del K-Clique no estan
+  conectados en G. Por lo que forman un IS y es de tamaño $k$.
+* B) Suponiendo que el IS de tamaño $k$ en $G$ es correcto, entonces los vertices del IS no estan conectados en G,
+  pero si entre todos ellos en $G'$. Por lo que forman un K-Clique de tamaño $k$.
+
+Queda entonces demostrado que $\text{IS} \leq_p \text{K-Clique}$. Por lo que K-Clique es NP-Completo.
+
+# EL CODIGO DE VALIDAR es el que debe estar escrito en el parcial. La reduccion solamente en palabras.
+
+### Validador de Independent Set
+
+```python
+def es_valido(vertices, grafo):
+    for v in vertices:
+        for u in vertices:
+            if u != v and u in grafo.obtener_adyacentes(v):
+                return False
+    return True
+```
+
+## Set Cover
+
+Tenemos un Set $U$ de $n$ elementos y un listado $S_1, S_2, \dots, S_m$ de subconjuntos de $U$. Un Set Cover es una
+coleccion de estos Subsets tal que la union es U.
+
+> _Dado un conjunto $U$ de $n$ elementos, una colección $S_1, S_2, \dots, S_m$ de subconjuntos de $U$, y un número $k$,
+> ¿existe un set cover de tamaño $\leq k$?_
+
+### Puedo establecer $\text{Vertex Cover} \leq_p \text{Set Cover}$.
+
+Vertex Cover: Subconjunto en el cual juntando los vertices del subconjunto, sus ejes son todos los ejes del grafo.
+
+1. Tengo un grafo $G = (V, E)$. Creo un conjunto $U$ que contenga como elementos a aristas de $G$.
+2. Hacer que cada subconjunto $S_i$ contenga las aristas que cubre el vertice $v_i$.
+3. Preguntar si hay un Set Cover de tamaño $k$ en $U$.
+
+* A) _"Si hay un Set Cover de tamaño $k$ en $U$, entonces hay un Vertex Cover de tamaño $k$ en $G$."_
+* B) _"Si hay un Vertex Cover de tamaño $k$ en $G$, entonces hay un Set Cover de tamaño $k$ en $U$."_
+
+* A) Suponiendo que un Set Cover de tamaño $k$ en $U$, entonces sabemos que esos elementos (aristas en G) estan
+  cubiertos
+  en su totalidad por la union de los conjuntos $S_i$. Por lo que ese conjunto $T \subseteq U$ de subconjuntos $S_i$
+  representa a los vertices $i$ que se cubren las aristas del vertice $i$. Por lo que ese conjunto $T$ representa a los
+  vertices que cubren las aristas de $G$ que definen a un Vertex Cover de tamanio $\leq k$. Esto es porque estamos
+  suponiendo que hay un Set Cover de tamaño $k$ en $U$.
+* B) Suponiendo que hay un Vertex Cover de tamaño $k$ en $G$, entonces sabemos que esos vertices cubren todas las
+  aristas
+  del conjunto de vertices. Si tomamos que los subconjuntos $S_i$ en $U$ estan incluidos porque representan a los
+  vertices
+  y todas las aristas alcanzadas por el Vertex Cover son exactamente todos los elementos de $U$, entonces sabemos que
+  hay
+  un Set Cover de tamaño $k$ en $U$.
+
+### Puedo establecer $\text{Dominating Set} \leq_p \text{Set Cover}$.
+
+Dominating Set: is a subset S of vertices such that every vertex not in S is adjacent to some vertex in S
+
+1. Desde un grafo $G = (V, E)$ creo un conjunto de elementos $U$ que contenga a todos los vertices de $G$.
+2. Creo un conjunto de subconjuntos $S_i$ donde cada subconjunto $i$ tenga como elementos a los vertices a los cuales el
+   vertice $i$ esta conectado, incluyendo al vertice $i$.
+
+```mermaid
+graph LR
+    1 --- 3
+    3 --- 2 & 4
+    4 --- 5
+```
+
+Desde este grafo, quedan:
+
+* $U = {1, 2, 3, 4, 5}$
+* $S_1 = {1, 3}$ -> desde $v_1$
+* $S_2 = {2, 3, 4}$ -> desde $v_2$
+* $S_3 = {1, 2, 3, 4}$ -> desde $v_3$
+* $S_4 = {3, 4, 5}$ -> desde $v_4$
+* $S_5 = {4, 5}$ -> desde $v_5$
+
+3. Preguntar si hay un Set Cover de tamaño $k$ en $U$.
+
+* A) _"Si hay un Set Cover de tamaño $k$ en $U$, entonces hay un Dominating Set de tamaño $k$ en $G$."_
+* B) _"Si hay un Dominating Set de tamaño $k$ en $G$, entonces hay un Set Cover de tamaño $k$ en $U$."_
+
+* A) Suponiendo que existe un Set Cover de tamaño $k$ en $U$, entonces:
+    * Sabemos que esos $S_i$ son $k$ en total: Es decir, se usan $k$ vertices de $G$
+    * Sabemos que esos S_i cubren todos los elementos de $U$: Es decir, se cubren todos los vertices de $G$.
+    * Por lo que esos $k$ vertices cubren todos los vertices de $G$ y son un Dominating Set de tamaño $k$.
+* B) Suponiendo que existe un Dominating Set de tamaño $k$ en $G$, entonces:
+    * Sabemos que esos $k$ vertices cubren todos los vertices de $G$: Es decir, se cubren todos elementos de $U$.
+    * Por lo que esos $k$ vertices cubren todos los vertices de $G$ y son un Set Cover de tamaño $k$.
+
+## Ejercicio de reduccion no NP-Completo
+
+(★★) Realizar una reducción polinomial del siguiente problema a otro de los vistos durante la cursada. Ayuda: pensar en
+alguno de los vistos de programación dinámica. Dada esta reducción, ¿se puede afirmar que este problema es NP-Completo?
+
+Dado un número n, encontrar la cantidad más económica (con menos términos) de escribirlo como una suma de cuadrados.
+
+Ejemplo 10 = 1^2 + 3^2
+
+Solucion: Reducir al problema del cambio.
+
+## Ejercicio guia
+
+(★★) Se tiene una matriz donde en cada celda hay submarinos, o no, y se quiere poner faros para iluminarlos a todos. El
+problema es dar la cantidad mínima de faros que se necesitan para que todos los submarinos queden iluminados, siendo que
+cada faro ilumina su celda y además todas las adyacentes (incluyendo las diagonales), y las directamente adyacentes a
+estas (es decir, un “radio de 2 celdas”). ¿Se encuentra este problema en NP? ¿Qué problema NP-Completo visto en la
+cursada es parecido al problema definido? Definir en ambos casos el problema de decisión. ¿qué reducción podríamos
+hacer? ¿Podemos concluir que este problema es un problema NP-Completo?
+
+Solucion: Reducir a Set Cover.
+
+1. Cada submarino es un elemento de $U$.
+2. Cada faro es un subconjunto $S_i$ que ilumina a los submarinos adyacentes. Para todos las $n^2$ posiciones posibles
+   de los faros. Teniendo en cuenta que faro $F_{i,j}$ representa al faro en la posicion $i,j$ de la grilla y tiene como
+   elementos a los faros a los que ilumina.
+3. Preguntar si hay un Set Cover de tamaño $k$ en $U$.
+
+* A) "Si hay un Set Cover de tamaño $k$ en $U$, entonces hay una cantidad minima de faros de tamaño $k$ que iluminan a
+  todos"
+* B) "Si hay una cantidad minima de faros de tamaño $k$ que iluminan a todos, entonces hay un Set Cover de tamaño $k$
+  en $U$"
+
+* A) Suponiendo que hay un Set Cover de tamaño $k$ en $U$, entonces esos $k$ elementos (faros) iluminan a todos los
+  submarinos en el problema original.
+* B) Suponiendo que hay una cantidad de k faros que iluminan a todos los submarinos, entonces esos k subsets cubren a
+  todos los elementos.
+
+## Path Selection vs Independent Set
+
+El problema de elección de caminos (Path Selection) pregunta: dado un grafo dirigido $G$ y un set de
+pedidos $P_1,P_2,\dots,P_c$ de caminos dentro de dicho grafo y un número $k$, ¿es posible seleccionar al menos $k$ de
+esos caminos tales que ningún par de caminos seleccionados comparta ningún nodo? Demostrar que Path Selection es un
+problema NP-Completo. Ayuda: este problema tiene mucha semejanza con **Independent Set.**
+
+![img_5.png](img_5.png)
+En el ejemplo tenemos:
+
+* $P_1$: {1, 3, 5}
+* $P_2$: {4, 5, 6}
+* $P_3$: {2, 3}
+* $P_4$: {1, 3}
+
+Solucion: Reducir a Independent Set. Es decir, demostrar que $IS \leq_p PS$.
+
+Esta en NP: Un verificador eficiente que reciba k caminos y chequear si no comparten nodos.
+
+Crear instancia de IS a partir de PS:
+
+1. Creamos un nuevo grafo $G'$ donde cada nodo es una arista de $G$.
+2. Para cada vertice $i$ en $G$, creamos un camino $P_i$ donde el camino pase por los nodos en $G'$ que eran aristas del
+   vertice $i$ en $G$.
+3. Para los vertices en $G$ que no tengan aristas, creamos un nodo extra en $G'$
+
+![img_6.png](img_6.png)
+
+Claro que en este grafo no se puede ver con claridad la distincion de donde comienza un camino y donde termina el otro.
+Asi que dejo la imagen que le sigue para ilustar con colores el inicio y fin de caminos.
+
+```mermaid
+graph LR
+    a --> c --> i --> j
+    a --> b --> c --> e --> d
+```
+
+![img_7.png](img_7.png)
+
+* P_1: {a, b}
+* P_2: {a, c, i, j}
+* ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
