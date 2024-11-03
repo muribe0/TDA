@@ -795,17 +795,128 @@ graph LR
 * P_2: {a, c, i, j}
 * ...
 
+## Dominating Set vs Vertex Cover
 
+Un set dominante (Dominating Set) de un grafo $G$ es un subconjunto $D$ de vértices de $G$, tal que para todo vértice
+de $G$: o bien:
 
+* (i) pertenece a D;
+* o bien (ii) es adyacente a un vértice en D.
+* Es decir, todos los vertices en D tendran algun vertice adyacente a ellos que tambien este en el conjunto, salvo que
+  este sea un vertice aislado en el grafo $G$.
 
+El problema de decisión del set dominante implica,
+dado un grafo $G$ y un número $k$, determinar si existe un set dominante $D$ de a lo sumo tamaño $k$. Demostrar que el
+Dominating Set Problem es un problema NP-Completo. Ayuda: recomendamos recordar Vertex Cover, que puede ser útil para
+esto.
 
+```mermaid
+graph LR
+    A((A)); B((B)); C((C)); D((D)); E((E)); F((F)); G((G));
+    A --- B
+    C --- A
+    B --- D
+    D --- C
+    E --- D
+    F --- G
+```
 
+Donde el conjunto dominante es {A, D, F}
 
+### Solucion
 
+> Dominating Set es NP-Completo.
 
+**Proof.** First we check whether DS is NP. For that we need to construct an eficcient verifier that can check if a
+given set of $k$ vertices (_the solution_) is a dominating set. For this, we need to check:
 
+* For all $v \in V$: O(|V| * |D|)
+    * $v \in D$
+    * or v is adjacent to a vertex in D
+* $|D| \leq k$  O(1)
 
+```python
+def es_valido(D, grafo, k):
+    if len(D) > k:
+        return False
+    for v in grafo.obtener_vertices():
+        if v in D:
+            continue
+        encontrado = False
+        for w in grafo.obtener_adyacentes(v):
+            if w in D:
+                encontrado = True
+        if encontrado == False:
+            return False
+    return True
+```
 
+This is done in polynomial time O(|V| * |D|). So DS is in NP.
+
+Now we need to prove that VC $\leq_p$ DS. We need to reduce Vertex Cover to Dominating Set. This means that VC is at
+least as hard as DS. Making it an NP-Complete problem, since VC is NP-Complete.
+
+> Given a graph $G = (V, E)$ is there a DS of size $\leq k$?
+> Given a graph $G = (V, E)$ is there a VC of size $\leq k$?
+
+#### Vertex Cover
+
+A Vertex Cover in a graph is a set of vertices that "covers" all edges.
+
+```mermaid
+graph LR
+    A((A)); B((B)); C((C)); D((D))
+    A ---|1| B
+    A ---|2| C
+    B ---|3| D
+    C ---|4| D
+```
+
+Reduction from VC to DS:
+Given a Graph $G = (V, E)$ the instance of VC is transformed into an instance of DS where
+
+1. For each vertex $j$ in $G$, we create a vertex $j$ in $G'$ where:
+    * We create an edge $j$ in $G'$ that connects $j$ to all the vertices that $j$ is connected to in $G$.
+2. For each edge $i$ in $G$ that connects $(u,v)$, we create a vertex $i$ in $G'$ where:
+    * The vertex $i$ in $G'$ is connected to $u$ and $v$ in $G'$
+
+Resulting graph:
+
+```mermaid
+graph LR
+    A((A)); B((B)); C((C)); D((D)); 1((1)); 2((2)); 3((3)); 4((4))
+    A --- B
+    A --- C
+    B --- D
+    C --- D
+    A --- 1 --- B
+    A --- 2 --- C
+    B --- 3 --- D
+    C --- 4 --- D
+```
+
+We affirm that:
+
+* A) If there is a VC of size $k$ in $G$, then there is a DS of size $k$ in $G'$.
+* B) If there is a DS of size $k$ in $G'$, then there is a VC of size $k$ in $G$.
+
+**Proof.**
+
+* A) Suppose that there is a VC of size $k$ in $G$. We define this solution with the set of vertices $K$. Then all
+  vertices of $K$ cover $k$ edges in the graph. For every edge covered we can say that in $G'$:
+    * Any vertex $i$ in $K$ is covers all its edges in $G$. Therefore, dominates all _those_ vertexes in $G'$.
+    * Any vertex $i$ in $K$ dominates all its adjacent vertexes in $G$. Therefore, since those vertexes also are
+      adjacent to $v_i$ in $G'$, they will be dominated as well.
+      Since those two cases cover all the possible adjacent vertexes of $v_i$, then we can say that:
+    * Any vertex $i$ in $K$ dominates all its adjacent vertexes and is in the set D of vertexes solution of DS of
+      size $\leq k$.
+* B) Suppose that there is a DS of size $k$ in $G'$. We define this solution with the set of vertices $D$. Then all
+  vertices of $D$ dominate $k$ vertexes in $G'$. For every vertex dominated we can say that in $G$:
+    * Any vertex $i$ in $D$ dominates all its adjacent vertexes in $G'$. Therefore, since those vertexes are either:
+        * Adjacent vertexes to $v_i$ in $G$ or
+        * Edjes connected to $v_i$ in $G$.
+          Then we can say that: Any vertex $i$ in $D$ covers all its edges in $G$, and since |D| $\leq k$, then there is
+          a VC of size $k$ in $G$.
 
 
 
