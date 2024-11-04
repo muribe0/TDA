@@ -9,11 +9,8 @@ from Greedy.grafo import Grafo
 
 
 def es_compatible(actual, visitados):
-    apariciones = 0
-    for v in visitados:
-        if actual == v:
-            apariciones +=1
-    return apariciones == 1
+    return visitados.count(actual) == 1
+
 
 def camino(grafo, vertices, actual, visitados):
     if len(visitados) == len(vertices):
@@ -22,7 +19,7 @@ def camino(grafo, vertices, actual, visitados):
     for w in grafo.adyacentes(actual):
         if w not in visitados:
             visitados.append(w)
-            if camino(grafo, vertices, w, visitados):
+            if es_compatible(actual, visitados) and camino(grafo, vertices, w, visitados):
                 return True
             visitados.remove(w)
     return False
