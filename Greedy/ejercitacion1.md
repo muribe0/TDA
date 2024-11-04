@@ -48,3 +48,56 @@ def asignar_mafias(pedidos):
     return charlas
 ```
 
+## Bifurcaciones en Ruta
+
+Una ruta tiene un conjunto de bifurcaciones para acceder a diferentes pueblos. El listado (ordenado por nombre del
+pueblo) contiene el número de kilómetro donde está ubicada cada una. Se desea ubicar la menor cantidad de policiales (en
+las bifurcaciones) de tal forma que no haya bifurcaciones con vigilancia a más de 50 km.
+Justificar que la solución es óptima. Indicar y justificar la complejidad del algoritmo implementado.
+Ejemplo:
+
+| Ciudad     | Bifurcación |
+|------------|-------------|
+| Castelli   | 185         |
+| Gral Guido | 242         |
+| Lezama     | 156         |
+| Maipú      | 270         |
+| Sevigne    | 194         |
+
+Si pongo un patrullero en la bifurcación de Lezama, cubro Castelli y Sevigne. Pero no Gral Guido y Maipú. Necesitaría en
+ese caso, poner otro. Agrego otro patrullero en Gral Guido. Con eso tengo 2 móviles policiales en bifurcaciones que
+cubren todas los accesos a todas las ciudades con distancia menor a 50km.
+En un caso alternativo donde solamente se consideren las bifurcaciones de Castelli, Gral Guido y Sevigne, la única
+solución óptima sería colocar un móvil policial en Sevigne.
+
+#### Solucion
+1. Ordenar por kilometro:
+
+| Ciudad     | Bifurcación |
+|------------|-------------|
+| Lezama     | 156         |
+| Castelli   | 185         |
+| Sevigne    | 194         |
+| Gral Guido | 242         |
+| Maipú      | 270         |
+
+2. Recorrer hasta encontrar una ciudad $i$ que no pueda cubrir a las anteriores descubiertas. Colocar un móvil en la
+   ciudad anterior a $i$ y continuar. 
+
+```python
+def cubrir(ciudades):
+    no_cubierto = ciudades[0]
+    colocados = []
+    for i in range(1, len(ciudades)):
+        act = ciudades[i] # Ciudad actual es la i-ésima
+        
+        if colocados and colocados[-1] + 50 < act: # Si el anterior policia cubre la ciudad actual
+            no_cubierto = act
+            continue
+            
+        if act - no_cubierto > 50: # Si la primer ciudad no cubierta está a más de 50km
+            # la cubro con un policia en la ciudad i-1
+            colocados.append(ciudades[i-1])
+
+
+```
