@@ -270,3 +270,6 @@ def sol(personas, n): # n: cant de clubes en total
 
 $O(V * E) = O( (p + n + pp) \cdot (n + pp + p + afiliados) )$
 
+# Ejercicio RPL seguimiento
+
+![img_4.png](img/img_4ff_seguimiento.png)

@@ -348,4 +348,3 @@ Sea $C(A',B')$ el corte minimo, si $A$ son los proyectos en el corte minimo, ent
 y $B' = (P - A) \cup \{t\}$.
 Si P cumple las restricciones de precedencia el corte $C(A',B')$ no tendra ejes $(i,j)$ que crucen de $A'$ a $B'$. Esto
 es pporque la capacidad de los ejes $i-j$ es mayor al corte $C(\{s\}, P\cup \{t\})$
-
