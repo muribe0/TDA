@@ -1007,4 +1007,3 @@ We affirm that:
 
 
 
-
